@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arabel Learn</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="arabel-learn/data.js"></script>
+<script src="arabel-learn/extra-lessons.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, #root { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #05050f; color: #e4e6f4;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+  /* Syntax tokens */
+  .tok-kw      { color: #c792ea; }
+  .tok-str     { color: #c3e88d; }
+  .tok-comment { color: #546e7a; font-style: italic; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(99,102,241,0.4); }
+    50%       { box-shadow: 0 0 18px rgba(99,102,241,0.7); }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="arabel-learn/components.jsx"></script>
+<script type="text/babel" src="arabel-learn/screens.jsx"></script>
+<script type="text/babel">
+const { useState, useEffect } = React;
+const LS_KEY = 'arabel_learn_state';
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#6366f1",
+  "showStreak": true,
+  "animateStars": true,
+  "compactSidebar": false
+}/*EDITMODE-END*/;
+
+function App() {
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch { return {}; }
+  }
+  function save(s) { try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch {} }
+
+  const saved = loadState();
+  const [nav, setNav]       = useState(saved.nav || { screen: 'auth' });
+  const [user, setUser]     = useState(window.LEARN_DATA.user);
+  const [completed, setCompleted] = useState(new Set(window.LEARN_DATA.user.completedLessons));
+  const [xpToast, setXpToast]     = useState(null);
+  const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
+  const [tweaksOpen, setTweaksOpen] = useState(false);
+
+  // Tweaks host protocol
+  useEffect(() => {
+    window.addEventListener('message', e => {
+      if (e.data?.type === '__activate_edit_mode')   setTweaksOpen(true);
+      if (e.data?.type === '__deactivate_edit_mode') setTweaksOpen(false);
+    });
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+  }, []);
+
+  function goTo(screen, params = {}) {
+    const s = { screen, ...params };
+    setNav(s);
+    save({ nav: s });
+  }
+
+  function handleNav(screen, params = {}) {
+    if (screen === 'home' || screen === 'courses') goTo('home', params);
+    else if (screen === 'profile') goTo('profile');
+    else goTo(screen, params);
+  }
+
+  function handleComplete(id, xp) {
+    setCompleted(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+    setUser(u => ({ ...u, xp: u.xp + xp }));
+    setXpToast({ xp });
+  }
+
+  function handleQuizComplete(id, xp, score, total) {
+    handleComplete(id, xp);
+    if (score === total) {
+      setUser(u => ({
+        ...u,
+        badges: u.badges.includes('quiz_ace') ? u.badges : [...u.badges, 'quiz_ace'],
+      }));
+    }
+  }
+
+  const completedArr = [...completed];
+  const { screen, courseId, lessonId, quizId } = nav;
+  const isAuth = screen === 'auth';
+
+  const accent = tweaks.accentColor || '#6366f1';
+
+  return (
+    <div style={{ height:'100%', display:'flex', flexDirection:'column' }}>
+      {isAuth ? (
+        <AuthScreen onLogin={() => goTo('home')} />
+      ) : (
+        <div style={{ display:'flex', height:'100%', overflow:'hidden', background:'#05050f', position:'relative' }}>
+          {tweaks.animateStars && <StarBackground />}
+
+          <Sidebar screen={screen} onNav={handleNav} user={user} />
+
+          <main style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden', position:'relative', zIndex:1 }}>
+            {/* Beta banner */}
+            <div style={{ display:'flex', alignItems:'center', gap:7, padding:'6px 20px', background:'rgba(146,64,14,0.15)', borderBottom:'1px solid rgba(180,83,9,0.4)', color:'#fbbf24', fontSize:'0.72rem', flexShrink:0 }}>
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}>
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              Arabel Learn è in beta — progressi e contenuti potrebbero cambiare
+            </div>
+
+            {/* Header */}
+            <Header
+              breadcrumbs={[
+                { label: 'Arabel', onClick: () => goTo('home') },
+                ...(screen === 'home' ? [{ label: 'Dashboard' }] : []),
+                ...(screen === 'profile' ? [{ label: 'Profilo' }] : []),
+                ...(screen === 'course' ? [
+                  { label: 'Corsi', onClick: () => goTo('home') },
+                  { label: window.LEARN_DATA.courses.find(c => c.id === courseId)?.name || '' },
+                ] : []),
+                ...((screen === 'lesson' || screen === 'quiz') ? [
+                  { label: 'Corsi', onClick: () => goTo('home') },
+                  { label: window.LEARN_DATA.courses.find(c => c.id === courseId)?.name || '', onClick: () => goTo('course', { courseId }) },
+                  { label: screen === 'lesson' ? (window.LEARN_DATA.lessons[lessonId]?.title || 'Lezione') : (window.LEARN_DATA.quizzes[quizId]?.title || 'Quiz') },
+                ] : []),
+              ]}
+              actions={tweaks.showStreak ? <StreakFlame count={user.streak} /> : null}
+            />
+
+            {/* Content */}
+            <div style={{ flex:1, overflowY:'auto', overflowX:'hidden' }}>
+              {screen === 'home' && (
+                <HomeScreen user={user} completedLessons={completedArr}
+                  onNav={(s, p) => goTo(s, p)} />
+              )}
+              {screen === 'course' && (
+                <CourseScreen courseId={courseId} completedLessons={completedArr}
+                  onNav={(s, p) => goTo(s, p)} onBack={() => goTo('home')} />
+              )}
+              {screen === 'lesson' && (
+                <LessonScreen lessonId={lessonId} courseId={courseId} completedLessons={completedArr}
+                  onComplete={handleComplete} onBack={() => goTo('course', { courseId })}
+                  onNav={(s, p) => goTo(s, p)} />
+              )}
+              {screen === 'quiz' && (
+                <QuizScreen quizId={quizId} courseId={courseId} completedLessons={completedArr}
+                  onComplete={handleQuizComplete} onBack={() => goTo('course', { courseId })} />
+              )}
+              {screen === 'profile' && (
+                <ProfileScreen user={user} completedLessons={completedArr} />
+              )}
+            </div>
+          </main>
+
+          {/* XP Toast */}
+          {xpToast && <XPToast xp={xpToast.xp} onDone={() => setXpToast(null)} />}
+
+          {/* Tweaks Panel */}
+          {tweaksOpen && (
+            <div style={{
+              position:'fixed', bottom:24, right:24, zIndex:200,
+              width:260, background:'rgba(12,12,28,0.96)', backdropFilter:'blur(20px)',
+              border:'1px solid rgba(255,255,255,0.1)', borderRadius:16, padding:18,
+              boxShadow:'0 16px 48px rgba(0,0,0,0.5)',
+            }}>
+              <div style={{ fontSize:'0.72rem', fontWeight:700, color:'rgba(228,230,244,0.45)', letterSpacing:'0.08em', marginBottom:16 }}>TWEAKS</div>
+
+              {/* Accent color */}
+              <div style={{ marginBottom:14 }}>
+                <div style={{ fontSize:'0.78rem', color:'rgba(228,230,244,0.6)', marginBottom:8 }}>Colore accento</div>
+                <div style={{ display:'flex', gap:8 }}>
+                  {['#6366f1','#06b6d4','#22c55e','#f59e0b','#a855f7'].map(c => (
+                    <button key={c} onClick={() => setTweaks(t => ({ ...t, accentColor: c }))} style={{
+                      width:28, height:28, borderRadius:'50%', background:c, border:`2px solid ${tweaks.accentColor === c ? '#fff' : 'transparent'}`,
+                      cursor:'pointer', transition:'border-color 0.15s',
+                    }} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Toggles */}
+              {[
+                { key:'showStreak', label:'Mostra Streak' },
+                { key:'animateStars', label:'Stelle animate' },
+              ].map(({ key, label }) => (
+                <div key={key} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>
+                  <span style={{ fontSize:'0.8rem', color:'rgba(228,230,244,0.6)' }}>{label}</span>
+                  <button onClick={() => setTweaks(t => ({ ...t, [key]: !t[key] }))} style={{
+                    width:40, height:22, borderRadius:99, border:'none', cursor:'pointer',
+                    background: tweaks[key] ? '#6366f1' : 'rgba(255,255,255,0.1)',
+                    position:'relative', transition:'background 0.2s',
+                  }}>
+                    <div style={{
+                      position:'absolute', top:3, left: tweaks[key] ? 20 : 3, width:16, height:16,
+                      borderRadius:'50%', background:'#fff', transition:'left 0.2s',
+                    }} />
+                  </button>
+                </div>
+              ))}
+
+              {/* Reset progress */}
+              <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid rgba(255,255,255,0.07)' }}>
+                <button onClick={() => { setCompleted(new Set()); setUser(u => ({ ...u, xp: 0 })); }} style={{
+                  width:'100%', padding:'7px', borderRadius:8, border:'1px solid rgba(239,68,68,0.25)',
+                  background:'rgba(239,68,68,0.07)', color:'rgba(239,68,68,0.7)', fontSize:'0.78rem', cursor:'pointer',
+                }}>Reset progressi (demo)</button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

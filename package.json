@@ -1,0 +1,42 @@
+{
+  "name": "arabel-learn",
+  "version": "1.0.0",
+  "description": "Arabel Learn — interactive coding lessons",
+  "main": "server/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "concurrently -n API,APP -c blue,green \"npm run server:dev\" \"npm run app:dev\"",
+    "start": "node server/index.js",
+    "server:dev": "nodemon server/index.js",
+    "app:dev": "vite --config app/vite.config.js",
+    "app:build": "vite build --config app/vite.config.js",
+    "app:preview": "vite preview --config app/vite.config.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "mysql2": "^3.14.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pinia": "^2.3.1",
+    "resend": "^6.10.0",
+    "sutando": "^1.4.5",
+    "vue": "^3.5.30",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.5",
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.14",
+    "vite": "^7.3.2",
+    "vite-plugin-pwa": "^1.0.0"
+  }
+}
