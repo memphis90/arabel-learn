@@ -8,8 +8,11 @@ const routes = [
   { path: '/lesson/:id', name: 'lesson', component: () => import('@/views/LessonView.vue'),    meta: { auth: true } },
   { path: '/quiz/:id',   name: 'quiz',   component: () => import('@/views/QuizView.vue'),      meta: { auth: true } },
   { path: '/profile',      name: 'profile',      component: () => import('@/views/ProfileView.vue'),      meta: { auth: true } },
-  { path: '/courses',     name: 'courses',     component: () => import('@/views/CoursesView.vue'),     meta: { auth: true } },
-  { path: '/leaderboard', name: 'leaderboard', component: () => import('@/views/LeaderboardView.vue'), meta: { auth: true } },
+  { path: '/courses',      name: 'courses',      component: () => import('@/views/CoursesView.vue'),      meta: { auth: true } },
+  { path: '/leaderboard',  name: 'leaderboard',  component: () => import('@/views/LeaderboardView.vue'),  meta: { auth: true } },
+  { path: '/amici',        name: 'amici',        component: () => import('@/views/AmiciView.vue'),        meta: { auth: true } },
+  { path: '/certificati',  name: 'certificati',  component: () => import('@/views/CertificatiView.vue'),  meta: { auth: true } },
+  { path: '/progressione', name: 'progressione', component: () => import('@/views/ProgressioneView.vue'), meta: { auth: true } },
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
