@@ -122,14 +122,14 @@ import AppHeader      from '@/components/AppHeader.vue'
 import CodeBlock      from '@/components/CodeBlock.vue'
 import TryItEditor    from '@/components/TryItEditor.vue'
 import { useLearnStore } from '@/stores/learn'
-import { courses, lessons, getAdjacentItems } from '@/data/learn'
+import { courses, lessons, quizzes as content, getAdjacentItems } from '@/data/learn'
 
 const route  = useRoute()
 const router = useRouter()
 const learn  = useLearnStore()
 
 const courseId = computed(() => route.query.courseId || route.params.id?.split('-').slice(0, 2).join('-'))
-const lesson   = computed(() => lessons[route.params.id])
+const lesson   = computed(() => lessons[route.params.id] ?? content[route.params.id])
 const course   = computed(() => courses.find(c => c.id === courseId.value))
 const done     = computed(() => learn.isCompleted(route.params.id))
 
@@ -147,10 +147,14 @@ function renderMd(text) {
 }
 
 async function complete() {
+  const courseItems  = course.value?.levels.flatMap(l => l.items.map(i => i.id)) || []
+  const doneBefore   = courseItems.filter(id => learn.isCompleted(id)).length
   await learn.completeItem(route.params.id, 'lesson', lesson.value.xp)
+  if (doneBefore === 0) learn.followCourse(courseId.value)
 }
 
 function navigateItem(item) {
+  if (!done.value) complete()
   if (item.type === 'quiz') {
     router.push({ name: 'quiz', params: { id: item.id }, query: { courseId: courseId.value } })
   } else {

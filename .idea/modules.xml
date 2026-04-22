@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/PhpstormProjects/Arabel/.idea/Arabel.iml" filepath="$USER_HOME$/PhpstormProjects/Arabel/.idea/Arabel.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/arabel-learn.iml" filepath="$PROJECT_DIR$/.idea/arabel-learn.iml" />
     </modules>
   </component>

@@ -122,9 +122,10 @@ const activeAvail    = ref('all')
 const categoryFilters = computed(() => ['all', ...CATEGORY_ORDER])
 
 const availFilters = computed(() => [
-  { value: 'all',    label: t('courses.filter_all') },
-  { value: 'active', label: t('courses.filter_active') },
-  { value: 'soon',   label: t('courses.filter_soon') },
+  { value: 'all',      label: t('courses.filter_all') },
+  { value: 'following', label: t('courses.filter_following') },
+  { value: 'active',   label: t('courses.filter_active') },
+  { value: 'soon',     label: t('courses.filter_soon') },
 ])
 
 function progress(course) {

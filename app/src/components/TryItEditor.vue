@@ -48,7 +48,7 @@
         {{ running ? 'Esecuzione…' : 'Esegui' }}
       </button>
       <span style="flex:1;font-size:0.7rem;color:rgba(228,230,244,0.18)">
-        {{ isJS ? 'esecuzione locale' : 'powered by glot.io' }}
+        {{ isJS ? 'esecuzione locale' : pistonCfg ? 'powered by piston' : 'output atteso' }}
       </span>
     </div>
 
@@ -91,11 +91,31 @@ const LANG_LABELS = {
   go:   'Go',
   java: 'Java',
   php:  'PHP',
+  bash: 'Bash',
+  sql:  'SQL',
+  yaml: 'YAML',
 }
 
-const lang      = computed(() => props.tryIt.lang || 'js')
+const PISTON_MAP = {
+  ts:   { language: 'typescript', version: '*' },
+  py:   { language: 'python',     version: '*' },
+  go:   { language: 'go',         version: '*' },
+  java: { language: 'java',       version: '*' },
+  php:  { language: 'php',        version: '*' },
+  bash: { language: 'bash',       version: '*' },
+}
+
+function detectLang(tryIt) {
+  if (tryIt.lang) return tryIt.lang
+  const c = tryIt.code?.trim() || ''
+  if (c.startsWith('#!') || /^(cd|ls|mkdir|rm|echo|cat|grep|find|chmod|sudo)\b/m.test(c)) return 'bash'
+  return 'js'
+}
+
+const lang      = computed(() => detectLang(props.tryIt))
 const langLabel = computed(() => LANG_LABELS[lang.value] || lang.value)
 const isJS      = computed(() => JS_LANGS.has(lang.value))
+const pistonCfg = computed(() => PISTON_MAP[lang.value] || null)
 
 const code     = ref(props.tryIt.code)
 const output   = ref('')
@@ -139,26 +159,26 @@ async function run() {
   try {
     if (isJS.value) {
       const { out, err } = await runLocal(code.value)
-      if (err) {
-        hasError.value = true
-        output.value   = (out ? out + '\n' : '') + err
-      } else {
-        output.value = out || '(nessun output)'
-      }
-    } else {
-      // Fallback: Glot.io public API (no auth for basic languages)
-      const GLOT = `https://glot.io/api/run/${lang.value}/latest`
-      const res  = await fetch(GLOT, {
+      hasError.value = !!err
+      output.value   = err ? (out ? out + '\n' : '') + err : (out || '(nessun output)')
+    } else if (pistonCfg.value) {
+      const res = await fetch('https://emkc.org/api/v2/piston/execute', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ files: [{ name: `main.${lang.value}`, content: code.value }] }),
+        body: JSON.stringify({
+          language: pistonCfg.value.language,
+          version:  pistonCfg.value.version,
+          files:    [{ content: code.value }],
+        }),
       })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      if (!res.ok) throw new Error(`Piston HTTP ${res.status}`)
       const data = await res.json()
-      const out  = (data.stdout || '').trim()
-      const err  = (data.stderr || '').trim()
+      const out  = (data.run?.stdout || '').trimEnd()
+      const err  = (data.run?.stderr || '').trimEnd()
       if (err && !out) { hasError.value = true; output.value = err }
       else output.value = (out + (err ? '\n' + err : '')) || '(nessun output)'
+    } else {
+      output.value = props.tryIt.output || 'Esecuzione non disponibile nel browser per questo linguaggio.'
     }
   } catch (err) {
     hasError.value = true

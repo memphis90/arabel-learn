@@ -1105,7 +1105,7 @@ export const quizzes = {
     ],
     tryIt: {
       desc: "Scrivi uno script che prende un nome come argomento e stampa 'Ciao, [nome]!':",
-      code: `#!/bin/bash\nnome=${1:-"Mondo"}   # default "Mondo" se non passato\necho "Ciao, $nome!"\n\n# Esegui con:\n# bash saluta.sh Marco`,
+      code: `#!/bin/bash\nnome=\${1:-"Mondo"}   # default "Mondo" se non passato\necho "Ciao, $nome!"\n\n# Esegui con:\n# bash saluta.sh Marco`,
       output: `Ciao, Marco!`,
     },
   },
@@ -1215,7 +1215,7 @@ export const quizzes = {
     title: 'Test automatizzati nella pipeline', xp: 15,
     blocks: [
       { type: 'text', md: 'Integrare i test nella pipeline garantisce che nessun codice rotto raggiunga il repository. GitHub Actions può eseguire test unitari, di integrazione e E2E con report automatici.' },
-      { type: 'code', label: 'test-pipeline.yml', lang: 'yaml', code: `jobs:\n  test:\n    runs-on: ubuntu-latest\n\n    services:\n      mysql:\n        image: mysql:8\n        env:\n          MYSQL_DATABASE: testdb\n          MYSQL_ROOT_PASSWORD: root\n        ports:\n          - 3306:3306\n        options: --health-cmd="mysqladmin ping" --health-interval=10s\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n\n      - run: npm ci\n\n      - name: Test unitari\n        run: npm run test:unit\n\n      - name: Test integrazione (con DB)\n        run: npm run test:integration\n        env:\n          DB_HOST: 127.0.0.1\n          DB_PORT: 3306\n\n      - name: Coverage report\n        uses: codecov/codecov-action@v4\n        if: always()\n        with:\n          token: ${{ secrets.CODECOV_TOKEN }}` },
+      { type: 'code', label: 'test-pipeline.yml', lang: 'yaml', code: `jobs:\n  test:\n    runs-on: ubuntu-latest\n\n    services:\n      mysql:\n        image: mysql:8\n        env:\n          MYSQL_DATABASE: testdb\n          MYSQL_ROOT_PASSWORD: root\n        ports:\n          - 3306:3306\n        options: --health-cmd="mysqladmin ping" --health-interval=10s\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n\n      - run: npm ci\n\n      - name: Test unitari\n        run: npm run test:unit\n\n      - name: Test integrazione (con DB)\n        run: npm run test:integration\n        env:\n          DB_HOST: 127.0.0.1\n          DB_PORT: 3306\n\n      - name: Coverage report\n        uses: codecov/codecov-action@v4\n        if: always()\n        with:\n          token: \${{ secrets.CODECOV_TOKEN }}` },
       { type: 'keypoints', title: 'Services in Actions', points: [
         '`services` avvia container Docker come dipendenze (DB, Redis, ecc.)',
         '`--health-cmd` aspetta che il servizio sia pronto prima di procedere',
@@ -1225,7 +1225,7 @@ export const quizzes = {
     ],
     tryIt: {
       desc: 'Aggiungi una matrix strategy per testare su Node 18 e Node 20:',
-      code: `jobs:\n  test:\n    runs-on: ubuntu-latest\n    strategy:\n      matrix:\n        node: [18, 20]\n    steps:\n      - uses: actions/setup-node@v4\n        with:\n          node-version: ${{ matrix.node }}\n      - run: npm test`,
+      code: `jobs:\n  test:\n    runs-on: ubuntu-latest\n    strategy:\n      matrix:\n        node: [18, 20]\n    steps:\n      - uses: actions/setup-node@v4\n        with:\n          node-version: \${{ matrix.node }}\n      - run: npm test`,
       output: `Jobs in parallelo: test (node 18) + test (node 20)`,
     },
   },
@@ -1233,7 +1233,7 @@ export const quizzes = {
     title: 'Docker in CI e build artefatti', xp: 15,
     blocks: [
       { type: 'text', md: 'Costruire e pubblicare una **Docker image** nella pipeline garantisce che l\'ambiente di produzione sia identico a quello testato. GitHub Actions si integra nativamente con Docker Hub e GitHub Container Registry.' },
-      { type: 'code', label: 'docker-build.yml', lang: 'yaml', code: `jobs:\n  build-and-push:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read\n      packages: write\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Login a GitHub Container Registry\n        uses: docker/login-action@v3\n        with:\n          registry: ghcr.io\n          username: ${{ github.actor }}\n          password: ${{ secrets.GITHUB_TOKEN }}\n\n      - name: Metadati immagine\n        id: meta\n        uses: docker/metadata-action@v5\n        with:\n          images: ghcr.io/${{ github.repository }}\n          tags: |\n            type=sha,prefix=commit-\n            type=ref,event=branch\n            type=semver,pattern={{version}}\n\n      - name: Build e push\n        uses: docker/build-push-action@v5\n        with:\n          context: .\n          push: true\n          tags: ${{ steps.meta.outputs.tags }}\n          cache-from: type=gha\n          cache-to: type=gha,mode=max` },
+      { type: 'code', label: 'docker-build.yml', lang: 'yaml', code: `jobs:\n  build-and-push:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read\n      packages: write\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Login a GitHub Container Registry\n        uses: docker/login-action@v3\n        with:\n          registry: ghcr.io\n          username: \${{ github.actor }}\n          password: \${{ secrets.GITHUB_TOKEN }}\n\n      - name: Metadati immagine\n        id: meta\n        uses: docker/metadata-action@v5\n        with:\n          images: ghcr.io/\${{ github.repository }}\n          tags: |\n            type=sha,prefix=commit-\n            type=ref,event=branch\n            type=semver,pattern={{version}}\n\n      - name: Build e push\n        uses: docker/build-push-action@v5\n        with:\n          context: .\n          push: true\n          tags: \${{ steps.meta.outputs.tags }}\n          cache-from: type=gha\n          cache-to: type=gha,mode=max` },
       { type: 'text', md: '`cache-from: type=gha` usa la cache di GitHub Actions per velocizzare il build Docker — gli strati non cambiati non vengono ricostruiti.' },
     ],
     tryIt: {
@@ -1246,7 +1246,7 @@ export const quizzes = {
     title: 'Deploy automatico su server', xp: 15,
     blocks: [
       { type: 'text', md: 'Dopo il build e i test, la pipeline può fare deploy automaticamente sul server. GitHub Actions supporta SSH, FTP, API cloud provider e strumenti come Ansible e Kubernetes.' },
-      { type: 'code', label: 'deploy.yml', lang: 'yaml', code: `jobs:\n  deploy:\n    runs-on: ubuntu-latest\n    needs: [test, build]     # parte solo se test e build passano\n    if: github.ref == 'refs/heads/main'\n\n    steps:\n      - uses: actions/checkout@v4\n\n      # Deploy via SSH\n      - name: Deploy su server\n        uses: appleboy/ssh-action@v1\n        with:\n          host: ${{ secrets.SERVER_HOST }}\n          username: ${{ secrets.SERVER_USER }}\n          key: ${{ secrets.SSH_PRIVATE_KEY }}\n          script: |\n            cd /var/www/myapp\n            git pull origin main\n            npm ci --only=production\n            pm2 restart myapp\n\n      # Deploy Docker su server\n      - name: Pull e riavvia container\n        uses: appleboy/ssh-action@v1\n        with:\n          host: ${{ secrets.SERVER_HOST }}\n          username: deploy\n          key: ${{ secrets.SSH_PRIVATE_KEY }}\n          script: |\n            docker pull ghcr.io/utente/app:latest\n            docker stop myapp || true\n            docker run -d --name myapp -p 80:3000 ghcr.io/utente/app:latest` },
+      { type: 'code', label: 'deploy.yml', lang: 'yaml', code: `jobs:\n  deploy:\n    runs-on: ubuntu-latest\n    needs: [test, build]     # parte solo se test e build passano\n    if: github.ref == 'refs/heads/main'\n\n    steps:\n      - uses: actions/checkout@v4\n\n      # Deploy via SSH\n      - name: Deploy su server\n        uses: appleboy/ssh-action@v1\n        with:\n          host: \${{ secrets.SERVER_HOST }}\n          username: \${{ secrets.SERVER_USER }}\n          key: \${{ secrets.SSH_PRIVATE_KEY }}\n          script: |\n            cd /var/www/myapp\n            git pull origin main\n            npm ci --only=production\n            pm2 restart myapp\n\n      # Deploy Docker su server\n      - name: Pull e riavvia container\n        uses: appleboy/ssh-action@v1\n        with:\n          host: \${{ secrets.SERVER_HOST }}\n          username: deploy\n          key: \${{ secrets.SSH_PRIVATE_KEY }}\n          script: |\n            docker pull ghcr.io/utente/app:latest\n            docker stop myapp || true\n            docker run -d --name myapp -p 80:3000 ghcr.io/utente/app:latest` },
       { type: 'keypoints', title: 'Sicurezza nel deploy', points: [
         'Usa `needs: [test]` per non fare deploy se i test falliscono',
         '`if: github.ref == refs/heads/main` — deploy solo da main',
@@ -1277,7 +1277,7 @@ export const quizzes = {
     title: 'Secrets, sicurezza e OIDC', xp: 20,
     blocks: [
       { type: 'text', md: 'I **secrets** di GitHub Actions sono variabili cifrate accessibili solo ai workflow. **OIDC** (OpenID Connect) permette autenticazione con cloud provider senza secrets long-lived — è l\'approccio più sicuro.' },
-      { type: 'code', label: 'secrets-oidc.yml', lang: 'yaml', code: `# Secrets tradizionali (meno sicuri, ma semplici)\n- name: Deploy\n  env:\n    API_KEY: ${{ secrets.API_KEY }}\n    DB_URL: ${{ secrets.DATABASE_URL }}\n  run: ./deploy.sh\n\n# OIDC con AWS (no credenziali long-lived!)\njobs:\n  deploy:\n    permissions:\n      id-token: write   # necessario per OIDC\n      contents: read\n\n    steps:\n      - name: Configure AWS credentials via OIDC\n        uses: aws-actions/configure-aws-credentials@v4\n        with:\n          role-to-assume: arn:aws:iam::123:role/GitHubDeploy\n          aws-region: eu-west-1\n          # Nessun AWS_ACCESS_KEY_ID richiesto!\n\n      - name: Deploy su ECS\n        run: aws ecs update-service ...\n\n# Livelli di secrets:\n# Repository secrets → solo per quel repo\n# Environment secrets → solo per quell'ambiente\n# Organization secrets → condivisi tra repo` },
+      { type: 'code', label: 'secrets-oidc.yml', lang: 'yaml', code: `# Secrets tradizionali (meno sicuri, ma semplici)\n- name: Deploy\n  env:\n    API_KEY: \${{ secrets.API_KEY }}\n    DB_URL: \${{ secrets.DATABASE_URL }}\n  run: ./deploy.sh\n\n# OIDC con AWS (no credenziali long-lived!)\njobs:\n  deploy:\n    permissions:\n      id-token: write   # necessario per OIDC\n      contents: read\n\n    steps:\n      - name: Configure AWS credentials via OIDC\n        uses: aws-actions/configure-aws-credentials@v4\n        with:\n          role-to-assume: arn:aws:iam::123:role/GitHubDeploy\n          aws-region: eu-west-1\n          # Nessun AWS_ACCESS_KEY_ID richiesto!\n\n      - name: Deploy su ECS\n        run: aws ecs update-service ...\n\n# Livelli di secrets:\n# Repository secrets → solo per quel repo\n# Environment secrets → solo per quell'ambiente\n# Organization secrets → condivisi tra repo` },
       { type: 'keypoints', title: 'Best practice sicurezza', points: [
         'OIDC > secrets long-lived: token temporanei, nessuna rotazione manuale',
         'Scope minimi: usa `permissions` per limitare i token GitHub',
@@ -1295,7 +1295,7 @@ export const quizzes = {
     title: 'Monitoring e rollback', xp: 20,
     blocks: [
       { type: 'text', md: 'Un sistema CI/CD maturo include **monitoring post-deploy** e una strategia di **rollback** rapido. Il deploy non finisce quando il container parte — finisce quando le metriche confermano che tutto funziona.' },
-      { type: 'code', label: 'monitoring.yml', lang: 'yaml', code: `jobs:\n  deploy:\n    steps:\n      - name: Deploy nuova versione\n        run: ./deploy.sh v2.0.0\n\n      - name: Health check post-deploy\n        run: |\n          for i in {1..10}; do\n            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://api.mioapp.com/health)\n            if [ "$STATUS" = "200" ]; then\n              echo "✅ App healthy"\n              exit 0\n            fi\n            echo "Attempt $i: status $STATUS — attendo..."\n            sleep 10\n          done\n          echo "❌ Health check fallito — avvio rollback"\n          exit 1\n\n      - name: Rollback automatico se health check fallisce\n        if: failure()\n        run: |\n          echo "🔄 Rollback a versione precedente..."\n          ./deploy.sh v1.9.0\n          # Notifica Slack\n          curl -X POST ${{ secrets.SLACK_WEBHOOK }} \\\n            -d '{\"text\": \"⚠️ Rollback effettuato — controlla i log\"}'\n\n      - name: Notifica successo\n        if: success()\n        run: echo "🚀 Deploy v2.0.0 completato con successo"` },
+      { type: 'code', label: 'monitoring.yml', lang: 'yaml', code: `jobs:\n  deploy:\n    steps:\n      - name: Deploy nuova versione\n        run: ./deploy.sh v2.0.0\n\n      - name: Health check post-deploy\n        run: |\n          for i in {1..10}; do\n            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://api.mioapp.com/health)\n            if [ "$STATUS" = "200" ]; then\n              echo "✅ App healthy"\n              exit 0\n            fi\n            echo "Attempt $i: status $STATUS — attendo..."\n            sleep 10\n          done\n          echo "❌ Health check fallito — avvio rollback"\n          exit 1\n\n      - name: Rollback automatico se health check fallisce\n        if: failure()\n        run: |\n          echo "🔄 Rollback a versione precedente..."\n          ./deploy.sh v1.9.0\n          # Notifica Slack\n          curl -X POST \${{ secrets.SLACK_WEBHOOK }} \\\n            -d '{\"text\": \"⚠️ Rollback effettuato — controlla i log\"}'\n\n      - name: Notifica successo\n        if: success()\n        run: echo "🚀 Deploy v2.0.0 completato con successo"` },
       { type: 'keypoints', title: 'Strategie di rollback', points: [
         '**Immediato**: ripristina il deploy precedente (Docker tag, Git tag)',
         '**Feature flag**: disabilita la feature senza rideploy',
@@ -1305,7 +1305,7 @@ export const quizzes = {
     ],
     tryIt: {
       desc: 'Scrivi lo step che esegue il rollback solo se il deploy precedente è fallito:',
-      code: `- name: Rollback\n  if: failure()\n  run: |\n    echo "Deploy fallito — rollback..."\n    ./deploy.sh ${{ env.PREVIOUS_VERSION }}`,
+      code: `- name: Rollback\n  if: failure()\n  run: |\n    echo "Deploy fallito — rollback..."\n    ./deploy.sh \${{ env.PREVIOUS_VERSION }}`,
       output: `Rollback eseguito: v1.9.0 ripristinata`,
     },
   },
@@ -1504,7 +1504,7 @@ export const quizzes = {
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
 export function getDailyChallenge() {
-  const allQuizzes = Object.entries(quizzes)
+  const allQuizzes = Object.entries(quizzes).filter(([, q]) => q.questions)
   const dayIdx     = Math.floor(Date.now() / 86400000) % allQuizzes.length
   const [quizId, quiz] = allQuizzes[dayIdx]
   const courseId = (quizId.startsWith('nuxt') || quizId.startsWith('vue')) ? 'vue-nuxt'
