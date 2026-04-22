@@ -8,6 +8,7 @@
   --rgb-text: 228, 230, 244;
   --rgb-border: 255, 255, 255;
   --text-1: #e4e6f4;
+  color-scheme: dark;
 }
 
 html.light {
@@ -18,6 +19,7 @@ html.light {
   --rgb-text: 13, 15, 26;
   --rgb-border: 0, 0, 0;
   --text-1: #0d0f1a;
+  color-scheme: light;
 }
 
 html, body, #app {
@@ -30,8 +32,8 @@ html, body, #app {
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(var(--rgb-border), 0.1); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(var(--rgb-border), 0.18); }
+::-webkit-scrollbar-thumb { background: rgba(var(--rgb-border), 0.14); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(var(--rgb-border), 0.22); }
 
 /* Syntax tokens */
 .tok-kw      { color: #c792ea; }

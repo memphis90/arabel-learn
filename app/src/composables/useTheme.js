@@ -1,19 +1,23 @@
-import { ref, watch } from 'vue'
+import { ref, watch, readonly } from 'vue'
 
-const isDark = ref(localStorage.getItem('theme') !== 'light')
+const stored = localStorage.getItem('theme')
+const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+const isDark = ref(stored !== null ? stored !== 'light' : systemDark)
 
 function applyTheme(dark) {
   document.documentElement.classList.toggle('light', !dark)
-  localStorage.setItem('theme', dark ? 'dark' : 'light')
 }
 
 applyTheme(isDark.value)
 
-watch(isDark, applyTheme)
+watch(isDark, (dark) => {
+  applyTheme(dark)
+  localStorage.setItem('theme', dark ? 'dark' : 'light')
+})
 
 export function useTheme() {
   return {
-    isDark,
+    isDark: readonly(isDark),
     toggle() { isDark.value = !isDark.value },
   }
 }
