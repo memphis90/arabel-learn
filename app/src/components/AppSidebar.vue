@@ -2,8 +2,8 @@
   <aside :style="{
     position: 'relative', zIndex: 10, width: open ? '220px' : '64px', flexShrink: 0,
     height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch',
-    padding: '20px 10px 16px', background: 'rgba(9,9,26,0.9)', backdropFilter: 'blur(16px)',
-    borderRight: '1px solid rgba(255,255,255,0.06)', transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1)',
+    padding: '20px 10px 16px', background: 'var(--bg-sidebar)', backdropFilter: 'blur(16px)',
+    borderRight: '1px solid rgba(var(--rgb-border),0.06)', transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1)',
     overflow: 'hidden',
   }">
 
@@ -20,9 +20,9 @@
     <!-- Collapse toggle -->
     <button @click="open = !open" :style="{
       position: 'absolute', top: '24px', right: '-14px', width: '28px', height: '28px',
-      borderRadius: '50%', border: '1px solid rgba(255,255,255,0.08)',
-      background: 'rgba(9,9,26,0.95)', backdropFilter: 'blur(8px)',
-      cursor: 'pointer', color: 'rgba(228,230,244,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderRadius: '50%', border: '1px solid rgba(var(--rgb-border),0.08)',
+      background: 'var(--bg-sidebar)', backdropFilter: 'blur(8px)',
+      cursor: 'pointer', color: 'rgba(var(--rgb-text),0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center',
       transition: 'transform 0.3s', transform: open ? 'rotate(180deg)' : 'none', zIndex: 20,
       boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
     }">
@@ -34,7 +34,7 @@
     <!-- Nav -->
     <nav style="display:flex;flex-direction:column;gap:2px;flex:1;overflow:hidden">
       <template v-for="section in navSections" :key="section.label">
-        <div v-if="open && section.label" style="font-size:0.6rem;font-weight:700;color:rgba(228,230,244,0.22);letter-spacing:0.1em;padding:10px 10px 5px;white-space:nowrap">
+        <div v-if="open && section.label" style="font-size:0.6rem;font-weight:700;color:rgba(var(--rgb-text),0.22);letter-spacing:0.1em;padding:10px 10px 5px;white-space:nowrap">
           {{ section.label }}
         </div>
         <div v-else-if="!open && section.label" style="height:8px" />
@@ -43,24 +43,24 @@
     </nav>
 
     <!-- User trigger -->
-    <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;flex-shrink:0">
+    <div style="border-top:1px solid rgba(var(--rgb-border),0.06);padding-top:12px;flex-shrink:0">
       <button ref="triggerRef" @click="toggleMenu" :style="{
         display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px',
         borderRadius: '10px', border: 'none', width: '100%', cursor: 'pointer', textAlign: 'left',
         background: menuOpen ? 'rgba(99,102,241,0.12)' : 'transparent',
         transition: 'background 0.2s',
       }"
-      @mouseover="e => { if(!menuOpen) e.currentTarget.style.background='rgba(255,255,255,0.04)' }"
+      @mouseover="e => { if(!menuOpen) e.currentTarget.style.background='rgba(var(--rgb-border),0.04)' }"
       @mouseout="e => { if(!menuOpen) e.currentTarget.style.background = menuOpen ? 'rgba(99,102,241,0.12)' : 'transparent' }">
-        <div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:#6366f1;border:1.5px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.65rem;font-weight:700;flex-shrink:0">
+        <div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:#6366f1;border:1.5px solid rgba(var(--rgb-border),0.2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.65rem;font-weight:700;flex-shrink:0">
           {{ initials }}
         </div>
         <div v-if="open" style="flex:1;min-width:0;overflow:hidden">
-          <div style="font-size:0.78rem;font-weight:500;color:#e4e6f4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user?.name }}</div>
-          <div style="font-size:0.68rem;color:rgba(228,230,244,0.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user?.email }}</div>
+          <div style="font-size:0.78rem;font-weight:500;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user?.name }}</div>
+          <div style="font-size:0.68rem;color:rgba(var(--rgb-text),0.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user?.email }}</div>
         </div>
-        <svg v-if="open" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="rgba(228,230,244,0.3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-          :style="{ flexShrink: 0, transition: 'transform 0.2s', transform: menuOpen ? 'rotate(180deg)' : 'none' }">
+        <svg v-if="open" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          :style="{ flexShrink: 0, stroke: 'rgba(var(--rgb-text),0.3)', transition: 'transform 0.2s', transform: menuOpen ? 'rotate(180deg)' : 'none' }">
           <polyline points="18 15 12 9 6 15"/>
         </svg>
       </button>
@@ -76,19 +76,19 @@
         left: menuPos.left + 'px',
         bottom: menuPos.bottom + 'px',
         minWidth: '220px',
-        background: 'rgba(12,10,32,0.98)', border: '1px solid rgba(255,255,255,0.1)',
+        background: 'var(--bg-dropdown)', border: '1px solid rgba(var(--rgb-border),0.1)',
         borderRadius: '14px', overflow: 'hidden',
         boxShadow: '0 8px 32px rgba(0,0,0,0.6)', backdropFilter: 'blur(16px)',
       }">
         <!-- User info -->
-        <div style="padding:14px 16px 12px;border-bottom:1px solid rgba(255,255,255,0.06)">
+        <div style="padding:14px 16px 12px;border-bottom:1px solid rgba(var(--rgb-border),0.06)">
           <div style="display:flex;align-items:center;gap:10px">
-            <div style="width:32px;height:32px;min-width:32px;border-radius:50%;background:#6366f1;border:1.5px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:700">
+            <div style="width:32px;height:32px;min-width:32px;border-radius:50%;background:#6366f1;border:1.5px solid rgba(var(--rgb-border),0.2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:700">
               {{ initials }}
             </div>
             <div style="overflow:hidden">
-              <div style="font-size:0.82rem;font-weight:600;color:#e4e6f4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user?.name }}</div>
-              <div style="font-size:0.7rem;color:rgba(228,230,244,0.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user?.email }}</div>
+              <div style="font-size:0.82rem;font-weight:600;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user?.name }}</div>
+              <div style="font-size:0.7rem;color:rgba(var(--rgb-text),0.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user?.email }}</div>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@
           {{ t('nav.profile') }}
         </button>
 
-        <div style="height:1px;background:rgba(255,255,255,0.05);margin:0 10px" />
+        <div style="height:1px;background:rgba(var(--rgb-border),0.05);margin:0 10px" />
 
         <button @click="doLogout" class="menu-item menu-item--danger">
           <span v-html="icons.logout" />
@@ -197,7 +197,7 @@ const SidebarBtn = defineComponent({
         border: 'none', borderRadius: '10px', cursor: 'pointer', whiteSpace: 'nowrap',
         overflow: 'hidden', width: '100%', textAlign: 'left',
         background: props.active ? 'rgba(99,102,241,0.16)' : 'transparent',
-        color: props.active ? '#e4e6f4' : 'rgba(228,230,244,0.55)',
+        color: props.active ? 'var(--text-1)' : 'rgba(var(--rgb-text),0.55)',
         transition: 'background 0.2s, color 0.2s',
       },
     }, [
@@ -216,10 +216,10 @@ const SidebarBtn = defineComponent({
   display: flex; align-items: center; gap: 10px;
   width: 100%; padding: 11px 16px;
   border: none; background: transparent;
-  color: rgba(228,230,244,0.65); font-size: 0.83rem; font-weight: 500;
+  color: rgba(var(--rgb-text), 0.65); font-size: 0.83rem; font-weight: 500;
   cursor: pointer; text-align: left; transition: background 0.12s;
 }
-.menu-item:hover { background: rgba(255,255,255,0.06); color: #e4e6f4; }
+.menu-item:hover { background: rgba(var(--rgb-border), 0.06); color: var(--text-1); }
 .menu-item--danger { color: #f87171; }
 .menu-item--danger:hover { background: rgba(248,113,113,0.08); color: #fca5a5; }
 .menu-item :deep(svg) { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.75; }
