@@ -2,13 +2,12 @@
   <div style="position:relative;flex-shrink:0" ref="root">
     <button @click="open = !open" :style="{
       display: 'flex', alignItems: 'center', gap: '6px',
-      padding: '6px 10px', border: '1px solid rgba(255,255,255,0.08)',
+      padding: '6px 10px', border: '1px solid rgba(var(--rgb-border),0.08)',
       borderRadius: '8px', background: open ? 'rgba(99,102,241,0.12)' : 'transparent',
-      cursor: 'pointer', color: 'rgba(228,230,244,0.5)', transition: 'all 0.15s',
+      cursor: 'pointer', color: 'rgba(var(--rgb-text),0.5)', transition: 'all 0.15s',
     }"
-    @mouseover="e => { if(!open) e.currentTarget.style.background='rgba(255,255,255,0.05)' }"
+    @mouseover="e => { if(!open) e.currentTarget.style.background='rgba(var(--rgb-border),0.05)' }"
     @mouseout="e => { if(!open) e.currentTarget.style.background='transparent' }">
-      <!-- globe icon -->
       <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
         <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -21,18 +20,18 @@
     </button>
 
     <Transition name="lang-drop">
-      <div v-if="open" style="position:absolute;top:calc(100% + 6px);right:0;min-width:140px;border-radius:10px;border:1px solid rgba(255,255,255,0.09);background:rgba(12,10,32,0.98);box-shadow:0 8px 24px rgba(0,0,0,0.5);backdrop-filter:blur(16px);overflow:hidden;z-index:300">
+      <div v-if="open" style="position:absolute;top:calc(100% + 6px);right:0;min-width:140px;border-radius:10px;border:1px solid rgba(var(--rgb-border),0.09);background:var(--bg-dropdown);box-shadow:0 8px 24px rgba(0,0,0,0.5);backdrop-filter:blur(16px);overflow:hidden;z-index:300">
         <button v-for="opt in options" :key="opt.code"
           @click="pick(opt.code)"
           :style="{
             display: 'flex', alignItems: 'center', gap: '10px',
             width: '100%', padding: '10px 14px', border: 'none',
             background: lang === opt.code ? 'rgba(99,102,241,0.14)' : 'transparent',
-            color: lang === opt.code ? '#c4b5fd' : 'rgba(228,230,244,0.6)',
+            color: lang === opt.code ? '#c4b5fd' : 'rgba(var(--rgb-text),0.6)',
             fontSize: '0.82rem', fontWeight: lang === opt.code ? 600 : 400,
             cursor: 'pointer', textAlign: 'left', transition: 'background 0.1s',
           }"
-          @mouseover="e => { if(lang !== opt.code) e.currentTarget.style.background='rgba(255,255,255,0.05)' }"
+          @mouseover="e => { if(lang !== opt.code) e.currentTarget.style.background='rgba(var(--rgb-border),0.05)' }"
           @mouseout="e => { if(lang !== opt.code) e.currentTarget.style.background='transparent' }">
           <span style="font-size:1.1rem">{{ opt.flag }}</span>
           <span>{{ opt.label }}</span>
@@ -44,7 +43,6 @@
     </Transition>
   </div>
 
-  <!-- backdrop -->
   <Teleport to="body">
     <div v-if="open" @click="open = false" style="position:fixed;inset:0;z-index:299" />
   </Teleport>
