@@ -1,17 +1,37 @@
 *, *::before, *::after { box-sizing: border-box; }
 
+:root {
+  --bg-base: #05050f;
+  --bg-sidebar: rgba(9,9,26,0.9);
+  --bg-dropdown: rgba(12,10,32,0.98);
+  --rgb-surface: 12, 12, 28;
+  --rgb-text: 228, 230, 244;
+  --rgb-border: 255, 255, 255;
+  --text-1: #e4e6f4;
+}
+
+html.light {
+  --bg-base: #f1f2f8;
+  --bg-sidebar: rgba(246,247,252,0.97);
+  --bg-dropdown: rgba(255,255,255,0.99);
+  --rgb-surface: 255, 255, 255;
+  --rgb-text: 13, 15, 26;
+  --rgb-border: 0, 0, 0;
+  --text-1: #0d0f1a;
+}
+
 html, body, #app {
   margin: 0; padding: 0; height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #05050f;
-  color: #e4e6f4;
+  background: var(--bg-base);
+  color: var(--text-1);
   -webkit-font-smoothing: antialiased;
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+::-webkit-scrollbar-thumb { background: rgba(var(--rgb-border), 0.1); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(var(--rgb-border), 0.18); }
 
 /* Syntax tokens */
 .tok-kw      { color: #c792ea; }
