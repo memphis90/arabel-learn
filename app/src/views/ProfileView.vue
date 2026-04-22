@@ -58,7 +58,7 @@
             <h3 style="margin:0 0 14px;font-size:0.75rem;font-weight:600;color:rgba(228,230,244,0.38);letter-spacing:0.08em">BADGE</h3>
             <div style="display:flex;gap:12px;flex-wrap:wrap">
               <div v-for="id in stats.badges" :key="id" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:rgba(12,12,28,0.7);border:1px solid rgba(255,255,255,0.07)">
-                <div style="width:36px;height:36px;border-radius:10px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem">
+                <div :style="`width:36px;height:36px;border-radius:10px;background:rgba(${badgeData[id]?.colorRgb||'99,102,241'},0.12);border:1px solid rgba(${badgeData[id]?.colorRgb||'99,102,241'},0.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem`">
                   {{ badgeData[id]?.icon || '🏅' }}
                 </div>
                 <div>

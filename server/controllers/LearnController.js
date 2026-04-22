@@ -11,12 +11,95 @@ function computeLevel(xp) {
   return level
 }
 
+function hasAll(progress, ids) {
+  const done = new Set(progress.map(p => p.item_id))
+  return ids.every(id => done.has(id))
+}
+
 const BADGE_RULES = [
-  { id: 'first_lesson',   check: (progress) => progress.length >= 1 },
-  { id: 'streak_3',       check: (_, stats) => stats.streak >= 3 },
-  { id: 'streak_7',       check: (_, stats) => stats.streak >= 7 },
-  { id: 'node_beginner',  check: (progress) => progress.filter(p => p.item_id.startsWith('nodejs-')).length >= 5 },
-  { id: 'quiz_ace',       check: (progress) => progress.some(p => p.item_type === 'quiz' && p.score === p.score_total) },
+  // ── Attività ───────────────────────────────────────────────────────────────
+  { id: 'first_lesson',  check: (progress) => progress.length >= 1 },
+  { id: 'streak_3',      check: (_, stats) => stats.streak >= 3 },
+  { id: 'streak_7',      check: (_, stats) => stats.streak >= 7 },
+  { id: 'node_beginner', check: (progress) => progress.filter(p => p.item_id.startsWith('nodejs-')).length >= 5 },
+  { id: 'quiz_ace',      check: (progress) => progress.some(p => p.item_type === 'quiz' && p.score === p.score_total) },
+
+  // ── Carriera Frontend ──────────────────────────────────────────────────────
+  { id: 'junior_frontend', check: p => hasAll(p, [
+    'vue-1-1', 'vue-1-2', 'vue-1-3', 'vue-1-4', 'vue-1-q',
+    'ts-1-1',  'ts-1-2',  'ts-1-3',  'ts-1-q',
+  ])},
+  { id: 'mid_frontend', check: p => hasAll(p, [
+    'vue-1-1', 'vue-1-2', 'vue-1-3', 'vue-1-4', 'vue-1-q',
+    'vue-2-1', 'vue-2-2', 'vue-2-3', 'vue-2-4', 'vue-2-q',
+    'nuxt-3-1', 'nuxt-3-2', 'nuxt-3-3', 'nuxt-3-4', 'nuxt-3-q',
+    'ts-1-1', 'ts-1-2', 'ts-1-3', 'ts-1-q',
+    'ts-2-1', 'ts-2-2', 'ts-2-3', 'ts-2-q',
+  ])},
+
+  // ── Carriera Backend JS ────────────────────────────────────────────────────
+  { id: 'junior_backend', check: p => hasAll(p, [
+    'nodejs-1-1', 'nodejs-1-2', 'nodejs-1-3', 'nodejs-1-q',
+    'express-1-1', 'express-1-2', 'express-1-3', 'express-1-q',
+    'sql-1-1', 'sql-1-2', 'sql-1-3', 'sql-1-q',
+  ])},
+  { id: 'mid_backend_js', check: p => hasAll(p, [
+    'nodejs-1-1', 'nodejs-1-2', 'nodejs-1-3', 'nodejs-1-q',
+    'nodejs-2-1', 'nodejs-2-2', 'nodejs-2-3', 'nodejs-2-4', 'nodejs-2-q',
+    'nodejs-3-1', 'nodejs-3-2', 'nodejs-3-3', 'nodejs-3-4', 'nodejs-3-5', 'nodejs-3-q',
+    'express-1-1', 'express-1-2', 'express-1-3', 'express-1-q',
+    'express-2-1', 'express-2-2', 'express-2-3', 'express-2-q',
+  ])},
+
+  // ── Carriera PHP ───────────────────────────────────────────────────────────
+  { id: 'junior_php', check: p => hasAll(p, [
+    'php-1-1', 'php-1-2', 'php-1-3', 'php-1-q',
+  ])},
+  { id: 'mid_php', check: p => hasAll(p, [
+    'php-1-1', 'php-1-2', 'php-1-3', 'php-1-q',
+    'php-2-1', 'php-2-2', 'php-2-3', 'php-2-q',
+    'sql-2-1', 'sql-2-2', 'sql-2-3', 'sql-2-q',
+  ])},
+
+  // ── Carriera DevOps ────────────────────────────────────────────────────────
+  { id: 'devops_starter', check: p => hasAll(p, [
+    'git-1-1',   'git-1-2',   'git-1-3',   'git-1-q',
+    'linux-1-1', 'linux-1-2', 'linux-1-3', 'linux-1-q',
+  ])},
+  { id: 'devops_engineer', check: p => hasAll(p, [
+    'git-1-1',   'git-1-2',   'git-1-3',   'git-1-q',
+    'git-2-1',   'git-2-2',   'git-2-3',   'git-2-q',
+    'git-3-1',   'git-3-2',   'git-3-3',   'git-3-q',
+    'linux-1-1', 'linux-1-2', 'linux-1-3', 'linux-1-q',
+    'linux-2-1', 'linux-2-2', 'linux-2-3', 'linux-2-q',
+    'linux-3-1', 'linux-3-2', 'linux-3-3', 'linux-3-q',
+    'cicd-1-1',  'cicd-1-2',  'cicd-1-3',  'cicd-1-q',
+    'cicd-2-1',  'cicd-2-2',  'cicd-2-3',  'cicd-2-q',
+    'cicd-3-1',  'cicd-3-2',  'cicd-3-3',  'cicd-3-q',
+  ])},
+
+  // ── Full Stack & Data ──────────────────────────────────────────────────────
+  { id: 'full_stack_js', check: p => hasAll(p, [
+    'vue-1-1', 'vue-1-2', 'vue-1-3', 'vue-1-4', 'vue-1-q',
+    'vue-2-1', 'vue-2-2', 'vue-2-3', 'vue-2-4', 'vue-2-q',
+    'nuxt-3-1', 'nuxt-3-2', 'nuxt-3-3', 'nuxt-3-4', 'nuxt-3-q',
+    'nodejs-1-1', 'nodejs-1-2', 'nodejs-1-3', 'nodejs-1-q',
+    'nodejs-2-1', 'nodejs-2-2', 'nodejs-2-3', 'nodejs-2-4', 'nodejs-2-q',
+    'express-1-1', 'express-1-2', 'express-1-3', 'express-1-q',
+    'express-2-1', 'express-2-2', 'express-2-3', 'express-2-q',
+  ])},
+  { id: 'sql_master', check: p => hasAll(p, [
+    'sql-1-1', 'sql-1-2', 'sql-1-3', 'sql-1-q',
+    'sql-2-1', 'sql-2-2', 'sql-2-3', 'sql-2-q',
+    'sql-3-1', 'sql-3-2', 'sql-3-3', 'sql-3-q',
+  ])},
+  { id: 'data_engineer', check: p => hasAll(p, [
+    'sql-1-1', 'sql-1-2', 'sql-1-3', 'sql-1-q',
+    'sql-2-1', 'sql-2-2', 'sql-2-3', 'sql-2-q',
+    'sql-3-1', 'sql-3-2', 'sql-3-3', 'sql-3-q',
+    'redis-1-1', 'redis-1-2', 'redis-1-3', 'redis-1-q',
+    'redis-2-1', 'redis-2-2', 'redis-2-3', 'redis-2-q',
+  ])},
 ]
 
 function computeBadges(progress, stats, existingBadges) {

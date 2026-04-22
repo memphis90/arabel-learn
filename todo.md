@@ -33,3 +33,5 @@ Monetizzazione futura
 Priorità realistiche per ora:
 2. Certificati — valore percepito altissimo, semplice da fare (PDF generato lato server)
 3. Percorsi guidati — aiuta l'utente a capire da dove iniziare
+
+usare le "carriere" come hook per la pagina marketing
