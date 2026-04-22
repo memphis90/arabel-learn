@@ -4,7 +4,7 @@
       <template v-for="(b, i) in breadcrumbs" :key="i">
         <span v-if="i > 0" style="color:rgba(var(--rgb-text),0.14)">/</span>
         <button v-if="b.onClick" @click="b.onClick()" style="background:none;border:none;cursor:pointer;padding:0;font-size:inherit;color:rgba(var(--rgb-text),0.32);transition:color 0.15s"
-          @mouseover="e => e.target.style.color='var(--text-1)'" @mouseout="e => e.target.style.color='rgba(var(--rgb-text),0.32)'">
+          @mouseover="e => e.currentTarget.style.color='var(--text-1)'" @mouseout="e => e.currentTarget.style.color='rgba(var(--rgb-text),0.32)'">
           {{ b.label }}
         </button>
         <span v-else style="color:var(--text-1);font-weight:400">{{ b.label }}</span>
