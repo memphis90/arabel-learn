@@ -36,6 +36,37 @@
             Inizia un corso per vedere la tua progressione
           </div>
 
+          <!-- Carriere -->
+          <h2 style="margin:0 0 16px;font-size:0.72rem;font-weight:700;color:rgba(228,230,244,0.32);letter-spacing:0.1em">PERCORSI DI CARRIERA</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px;margin-bottom:40px">
+            <div v-for="career in careerStats" :key="career.id"
+              style="padding:16px 20px;border-radius:14px;background:rgba(12,12,28,0.6);border:1px solid rgba(255,255,255,0.06)">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="font-size:1.3rem">{{ career.emoji }}</span>
+                  <span style="font-size:0.88rem;font-weight:600;color:#e4e6f4">{{ career.name }}</span>
+                </div>
+                <div v-if="career.unlocked"
+                  style="font-size:0.68rem;font-weight:700;color:#86efac;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);padding:3px 8px;border-radius:99px">
+                  ✓ Sbloccato
+                </div>
+                <div v-else :style="{ fontSize:'0.75rem', fontWeight:700, color: career.pct > 0 ? '#a5b4fc' : 'rgba(228,230,244,0.3)' }">
+                  {{ career.pct }}%
+                </div>
+              </div>
+              <div style="height:5px;border-radius:99px;background:rgba(255,255,255,0.06);overflow:hidden;margin-bottom:6px">
+                <div :style="{
+                  height: '100%',
+                  width: career.pct + '%',
+                  background: career.unlocked ? '#22c55e' : '#6366f1',
+                  borderRadius: '99px',
+                  transition: 'width 0.6s ease',
+                }" />
+              </div>
+              <div style="font-size:0.68rem;color:rgba(228,230,244,0.3)">{{ career.done }}/{{ career.total }} item completati</div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
