@@ -105,6 +105,25 @@
             </div>
           </div>
 
+          <!-- Tempo di Studio -->
+          <h2 style="margin:0 0 4px;font-size:0.72rem;font-weight:700;color:rgba(228,230,244,0.32);letter-spacing:0.1em">TEMPO DI STUDIO</h2>
+          <div style="font-size:0.72rem;color:rgba(228,230,244,0.25);margin-bottom:16px">Ultimi 7 giorni · minuti</div>
+
+          <div style="padding:20px;border-radius:14px;background:rgba(12,12,28,0.7);border:1px solid rgba(255,255,255,0.06);margin-bottom:16px">
+            <VueApexCharts
+              type="bar"
+              height="200"
+              :options="studyChartOptions"
+              :series="[{ name: 'Minuti', data: studyTimeMockup }]"
+            />
+          </div>
+
+          <!-- Banner mockup -->
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);margin-bottom:40px">
+            <span style="font-size:0.9rem">⚠️</span>
+            <span style="font-size:0.78rem;color:rgba(251,191,36,0.7)">Dato simulato — il tracking reale del tempo di studio arriverà prossimamente</span>
+          </div>
+
         </div>
       </div>
     </div>
@@ -280,4 +299,43 @@ const studyTimeMockup = computed(() => {
   const seed = (n) => ((week * 31 + n * 17) % 91) + 10
   return [0, 1, 2, 3, 4, 5, 6].map(seed)
 })
+
+const studyChartOptions = {
+  chart: {
+    type: 'bar',
+    background: 'transparent',
+    toolbar: { show: false },
+    fontFamily: 'inherit',
+  },
+  plotOptions: {
+    bar: { borderRadius: 6, columnWidth: '52%' },
+  },
+  dataLabels: { enabled: false },
+  xaxis: {
+    categories: ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'],
+    labels: { style: { colors: 'rgba(228,230,244,0.35)', fontSize: '0.75rem' } },
+    axisBorder: { show: false },
+    axisTicks: { show: false },
+  },
+  yaxis: {
+    labels: {
+      style: { colors: 'rgba(228,230,244,0.35)', fontSize: '0.75rem' },
+      formatter: (v) => `${v}m`,
+    },
+  },
+  fill: {
+    type: 'gradient',
+    gradient: {
+      shade: 'dark', type: 'vertical',
+      gradientToColors: ['#818cf8'], stops: [0, 100],
+    },
+  },
+  colors: ['#6366f1'],
+  theme: { mode: 'dark' },
+  grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 },
+  tooltip: {
+    theme: 'dark',
+    y: { formatter: (v) => `${v} min` },
+  },
+}
 </script>
