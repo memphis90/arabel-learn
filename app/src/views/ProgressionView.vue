@@ -24,7 +24,7 @@
               <VueApexCharts
                 type="radialBar"
                 height="140"
-                :options="courseChartOptions(course.colorRgb)"
+                :options="course.chartOptions"
                 :series="[course.pct]"
               />
               <div style="font-size:0.82rem;font-weight:600;color:#e4e6f4;text-align:center;line-height:1.3">{{ course.name }}</div>
@@ -134,7 +134,6 @@
 import { computed } from 'vue'
 import AppSidebar from '@/components/AppSidebar.vue'
 import AppHeader  from '@/components/AppHeader.vue'
-import CourseIcon from '@/components/CourseIcon.vue'
 import { useAuthStore }  from '@/stores/auth'
 import { useLearnStore } from '@/stores/learn'
 import { courses } from '@/data/learn'
@@ -250,7 +249,7 @@ const globalStats = computed(() => [
 
 const activeCourseStats = computed(() =>
   activeCourses.value
-    .map(c => ({ ...c, ...courseProgress(c) }))
+    .map(c => ({ ...c, ...courseProgress(c), chartOptions: courseChartOptions(c.colorRgb) }))
     .filter(c => c.done > 0)
     .sort((a, b) => b.pct - a.pct)
 )
@@ -293,12 +292,10 @@ const earnedBadges = computed(() => {
   return ALL_BADGES.map(b => ({ ...b, earned: earned.has(b.id) }))
 })
 
-const studyTimeMockup = computed(() => {
-  // TODO: real data needs session tracking (login/logout timestamps) from backend
-  const week = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000))
-  const seed = (n) => ((week * 31 + n * 17) % 91) + 10
-  return [0, 1, 2, 3, 4, 5, 6].map(seed)
-})
+// TODO: real data needs session tracking (login/logout timestamps) from backend
+const _studyWeek = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000))
+const _studySeed = (n) => ((_studyWeek * 31 + n * 17) % 91) + 10
+const studyTimeMockup = [0, 1, 2, 3, 4, 5, 6].map(_studySeed)
 
 const studyChartOptions = {
   chart: {
