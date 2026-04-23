@@ -67,6 +67,44 @@
             </div>
           </div>
 
+          <!-- Badge -->
+          <h2 style="margin:0 0 16px;font-size:0.72rem;font-weight:700;color:rgba(228,230,244,0.32);letter-spacing:0.1em">BADGE</h2>
+
+          <!-- Empty state banner (shown ONLY if no badges earned) -->
+          <div v-if="!auth.stats.badges?.length"
+            style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:14px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);margin-bottom:16px">
+            <span style="font-size:1.5rem">🏅</span>
+            <div>
+              <div style="font-size:0.88rem;font-weight:600;color:#e4e6f4;margin-bottom:2px">Nessun badge ancora</div>
+              <div style="font-size:0.78rem;color:rgba(228,230,244,0.4)">Completa una lezione per ottenere il tuo primo badge</div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:40px">
+            <div v-for="badge in earnedBadges" :key="badge.id"
+              :style="{
+                padding: '18px 14px',
+                borderRadius: '14px',
+                background: badge.earned ? 'rgba(99,102,241,0.1)' : 'rgba(12,12,28,0.5)',
+                border: badge.earned ? '1px solid rgba(99,102,241,0.25)' : '1px solid rgba(255,255,255,0.04)',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+                textAlign: 'center',
+                opacity: badge.earned ? 1 : 0.4,
+                transition: 'opacity 0.2s',
+                position: 'relative',
+              }">
+              <span style="font-size:1.8rem;line-height:1">{{ badge.emoji }}</span>
+              <div style="font-size:0.75rem;font-weight:600;color:#e4e6f4;line-height:1.3">{{ badge.name }}</div>
+              <div style="font-size:0.65rem;color:rgba(228,230,244,0.4);line-height:1.4">{{ badge.description }}</div>
+              <!-- Lock icon on unearned badges -->
+              <div v-if="!badge.earned"
+                style="position:absolute;top:10px;right:10px;font-size:0.7rem;opacity:0.5">🔒</div>
+              <!-- Check on earned badges -->
+              <div v-if="badge.earned"
+                style="position:absolute;top:8px;right:8px;font-size:0.7rem">✓</div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
