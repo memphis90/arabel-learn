@@ -15,27 +15,25 @@
             </div>
           </div>
 
-          <!-- Per corso -->
-          <h2 style="margin:0 0 16px;font-size:0.72rem;font-weight:700;color:rgba(228,230,244,0.32);letter-spacing:0.1em">CORSI ATTIVI</h2>
-          <div style="display:flex;flex-direction:column;gap:10px">
-            <div v-for="course in activeCourseStats" :key="course.id"
-              style="padding:16px 20px;border-radius:14px;background:rgba(12,12,28,0.6);border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:16px">
-              <CourseIcon :course-id="course.id" />
-              <div style="flex:1;min-width:0">
-                <div style="font-size:0.88rem;font-weight:600;color:#e4e6f4;margin-bottom:6px">{{ course.name }}</div>
-                <div style="height:5px;border-radius:99px;background:rgba(255,255,255,0.07);overflow:hidden">
-                  <div :style="{ height:'100%', width:course.pct+'%', background:`rgb(${course.colorRgb})`, borderRadius:'99px', transition:'width 0.5s' }" />
-                </div>
-              </div>
-              <div style="text-align:right;flex-shrink:0">
-                <div :style="{ fontSize:'1rem', fontWeight:700, color:`rgb(${course.colorRgb})` }">{{ course.pct }}%</div>
-                <div style="font-size:0.68rem;color:rgba(228,230,244,0.3)">{{ course.done }}/{{ course.total }}</div>
-              </div>
-            </div>
+          <!-- Progressione Corsi -->
+          <h2 style="margin:0 0 16px;font-size:0.72rem;font-weight:700;color:rgba(228,230,244,0.32);letter-spacing:0.1em">PROGRESSIONE CORSI</h2>
 
-            <div v-if="!activeCourseStats.length" style="text-align:center;padding:48px;color:rgba(228,230,244,0.25);font-size:0.875rem">
-              Inizia un corso per vedere la tua progressione
+          <div v-if="activeCourseStats.length" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:40px">
+            <div v-for="course in activeCourseStats" :key="course.id"
+              style="padding:20px 16px 16px;border-radius:14px;background:rgba(12,12,28,0.7);border:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;gap:8px">
+              <VueApexCharts
+                type="radialBar"
+                height="140"
+                :options="courseChartOptions(course.colorRgb)"
+                :series="[course.pct]"
+              />
+              <div style="font-size:0.82rem;font-weight:600;color:#e4e6f4;text-align:center;line-height:1.3">{{ course.name }}</div>
+              <div style="font-size:0.7rem;color:rgba(228,230,244,0.35)">{{ course.done }}/{{ course.total }} lezioni</div>
             </div>
+          </div>
+
+          <div v-else style="text-align:center;padding:48px;color:rgba(228,230,244,0.25);font-size:0.875rem;margin-bottom:40px;border-radius:14px;background:rgba(12,12,28,0.4);border:1px solid rgba(255,255,255,0.04)">
+            Inizia un corso per vedere la tua progressione
           </div>
 
         </div>
@@ -168,6 +166,29 @@ const activeCourseStats = computed(() =>
     .filter(c => c.done > 0)
     .sort((a, b) => b.pct - a.pct)
 )
+
+function courseChartOptions(colorRgb) {
+  return {
+    chart: { type: 'radialBar', background: 'transparent', sparkline: { enabled: true } },
+    plotOptions: {
+      radialBar: {
+        hollow: { size: '62%' },
+        track: { background: 'rgba(255,255,255,0.05)', strokeWidth: '100%' },
+        dataLabels: {
+          name: { show: false },
+          value: {
+            fontSize: '1.1rem', fontWeight: 700,
+            color: '#e4e6f4', offsetY: 6,
+            formatter: (v) => `${Math.round(v)}%`,
+          },
+        },
+      },
+    },
+    fill: { colors: [`rgb(${colorRgb})`] },
+    stroke: { lineCap: 'round' },
+    theme: { mode: 'dark' },
+  }
+}
 
 const careerStats = computed(() =>
   CAREER_PATHS.map(career => {
