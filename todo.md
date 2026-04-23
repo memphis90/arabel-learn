@@ -35,3 +35,5 @@ Priorità realistiche per ora:
 3. Percorsi guidati — aiuta l'utente a capire da dove iniziare
 
 usare le "carriere" come hook per la pagina marketing
+
+quando completo una lezione  mi balza fuori perche non sono con un account vero, sto facendo override per testare. l'app non è collegata al db ancora queindi non può verificare i dati.

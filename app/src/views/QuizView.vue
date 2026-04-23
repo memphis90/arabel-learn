@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;height:100vh;background:#05050f;position:relative;overflow:hidden">
+  <div style="display:flex;height:100vh;background:var(--bg-base);position:relative;overflow:hidden">
     <StarBackground />
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1">
@@ -14,17 +14,17 @@
           <!-- Already done -->
           <div v-if="alreadyDone && !finished" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:16px;text-align:center">
             <div style="font-size:2.5rem">✓</div>
-            <h3 style="margin:0;color:#e4e6f4">Quiz già completato!</h3>
-            <p style="margin:0;color:rgba(228,230,244,0.45);font-size:0.875rem">Hai già guadagnato +{{ quiz.xp }} XP per questo quiz.</p>
-            <button @click="$router.push({ name: 'course', params: { id: courseId } })" style="padding:10px 22px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:rgba(228,230,244,0.7);cursor:pointer;font-size:0.875rem">← Torna al corso</button>
+            <h3 style="margin:0;color:var(--text-1)">Quiz già completato!</h3>
+            <p style="margin:0;color:rgba(var(--rgb-text),0.45);font-size:0.875rem">Hai già guadagnato +{{ quiz.xp }} XP per questo quiz.</p>
+            <button @click="$router.push({ name: 'course', params: { id: courseId } })" style="padding:10px 22px;border-radius:10px;border:1px solid rgba(var(--rgb-border),0.1);background:transparent;color:rgba(var(--rgb-text),0.7);cursor:pointer;font-size:0.875rem">← Torna al corso</button>
           </div>
 
           <!-- Results -->
           <div v-else-if="finished" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:20px">
             <div style="font-size:3rem">{{ resultEmoji }}</div>
             <div>
-              <h2 style="margin:0 0 6px;font-size:1.8rem;font-weight:700;color:#e4e6f4">{{ resultPct }}%</h2>
-              <p style="margin:0;color:rgba(228,230,244,0.5);font-size:0.9rem">{{ resultScore }} / {{ quiz.questions.length }} risposte corrette</p>
+              <h2 style="margin:0 0 6px;font-size:1.8rem;font-weight:700;color:var(--text-1)">{{ resultPct }}%</h2>
+              <p style="margin:0;color:rgba(var(--rgb-text),0.5);font-size:0.9rem">{{ resultScore }} / {{ quiz.questions.length }} risposte corrette</p>
             </div>
             <div :style="{ padding: '10px 20px', borderRadius: '12px', background: `rgba(${course?.colorRgb},0.1)`, border: `1px solid rgba(${course?.colorRgb},0.25)`, fontSize: '0.95rem', fontWeight: 700, color: `rgb(${course?.colorRgb})` }">
               +{{ quiz.xp }} XP guadagnati
@@ -37,16 +37,16 @@
           <template v-else-if="quiz">
             <!-- Progress -->
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
-              <div style="flex:1;height:4px;border-radius:99px;background:rgba(255,255,255,0.07);overflow:hidden">
+              <div style="flex:1;height:4px;border-radius:99px;background:rgba(var(--rgb-border),0.07);overflow:hidden">
                 <div :style="{ height: '100%', width: progressPct + '%', background: `rgb(${course?.colorRgb})`, borderRadius: '99px', transition: 'width 0.4s ease' }" />
               </div>
-              <span style="font-size:0.78rem;color:rgba(228,230,244,0.38);white-space:nowrap">{{ qIdx + 1 }} / {{ quiz.questions.length }}</span>
+              <span style="font-size:0.78rem;color:rgba(var(--rgb-text),0.38);white-space:nowrap">{{ qIdx + 1 }} / {{ quiz.questions.length }}</span>
             </div>
 
             <!-- Question -->
             <div style="margin-bottom:24px">
               <div :style="{ fontSize: '0.72rem', color: `rgba(${course?.colorRgb},0.8)`, fontWeight: 600, letterSpacing: '0.05em', marginBottom: '8px' }">DOMANDA {{ qIdx + 1 }}</div>
-              <h3 style="margin:0;font-size:1.1rem;font-weight:600;color:#e4e6f4;line-height:1.5">{{ q.text }}</h3>
+              <h3 style="margin:0;font-size:1.1rem;font-weight:600;color:var(--text-1);line-height:1.5">{{ q.text }}</h3>
             </div>
 
             <!-- Options -->
@@ -56,9 +56,9 @@
                   padding: '13px 16px', borderRadius: '12px', textAlign: 'left', cursor: submitted ? 'default' : 'pointer',
                   transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px',
                   fontSize: '0.875rem',
-                  border: `1.5px solid ${submitted && q.correct === oi ? 'rgba(34,197,94,0.5)' : submitted && selected === oi && q.correct !== oi ? 'rgba(239,68,68,0.5)' : selected === oi ? `rgba(${course?.colorRgb},0.5)` : 'rgba(255,255,255,0.07)'}`,
-                  background: submitted && q.correct === oi ? 'rgba(34,197,94,0.08)' : submitted && selected === oi && q.correct !== oi ? 'rgba(239,68,68,0.08)' : selected === oi ? `rgba(${course?.colorRgb},0.1)` : 'rgba(255,255,255,0.02)',
-                  color: submitted && q.correct === oi ? '#86efac' : submitted && selected === oi && q.correct !== oi ? '#fca5a5' : selected === oi ? '#e4e6f4' : 'rgba(228,230,244,0.7)',
+                  border: `1.5px solid ${submitted && q.correct === oi ? 'rgba(34,197,94,0.5)' : submitted && selected === oi && q.correct !== oi ? 'rgba(239,68,68,0.5)' : selected === oi ? `rgba(${course?.colorRgb},0.5)` : 'rgba(var(--rgb-border),0.07)'}`,
+                  background: submitted && q.correct === oi ? 'rgba(34,197,94,0.08)' : submitted && selected === oi && q.correct !== oi ? 'rgba(239,68,68,0.08)' : selected === oi ? `rgba(${course?.colorRgb},0.1)` : 'rgba(var(--rgb-border),0.02)',
+                  color: submitted && q.correct === oi ? '#86efac' : submitted && selected === oi && q.correct !== oi ? '#fca5a5' : selected === oi ? 'var(--text-1)' : 'rgba(var(--rgb-text),0.7)',
                 }">
                 <span>{{ opt }}</span>
                 <span v-if="submitted && q.correct === oi" style="color:#22c55e">✓</span>
@@ -67,13 +67,13 @@
             </div>
 
             <!-- Explanation -->
-            <div v-if="submitted" style="margin-bottom:18px;padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);font-size:0.83rem;color:rgba(228,230,244,0.6);line-height:1.6">
-              <span style="font-weight:600;color:rgba(228,230,244,0.8)">Spiegazione: </span>{{ q.explanation }}
+            <div v-if="submitted" style="margin-bottom:18px;padding:12px 16px;border-radius:12px;background:rgba(var(--rgb-border),0.03);border:1px solid rgba(var(--rgb-border),0.07);font-size:0.83rem;color:rgba(var(--rgb-text),0.6);line-height:1.6">
+              <span style="font-weight:600;color:rgba(var(--rgb-text),0.8)">Spiegazione: </span>{{ q.explanation }}
             </div>
 
             <!-- Action -->
             <button v-if="!submitted" @click="confirm" :disabled="selected === undefined"
-              :style="{ width: '100%', padding: '12px', borderRadius: '12px', border: 'none', fontSize: '0.9rem', fontWeight: 600, transition: 'background 0.2s', cursor: selected !== undefined ? 'pointer' : 'default', background: selected !== undefined ? '#6366f1' : 'rgba(99,102,241,0.2)', color: selected !== undefined ? '#fff' : 'rgba(228,230,244,0.3)' }">
+              :style="{ width: '100%', padding: '12px', borderRadius: '12px', border: 'none', fontSize: '0.9rem', fontWeight: 600, transition: 'background 0.2s', cursor: selected !== undefined ? 'pointer' : 'default', background: selected !== undefined ? '#6366f1' : 'rgba(99,102,241,0.2)', color: selected !== undefined ? '#fff' : 'rgba(var(--rgb-text),0.3)' }">
               Conferma risposta
             </button>
             <button v-else @click="next" :style="{ width: '100%', padding: '12px', borderRadius: '12px', border: 'none', background: `rgb(${course?.colorRgb})`, color: '#fff', fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer' }">

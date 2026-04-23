@@ -84,8 +84,8 @@
               <img v-if="badge.icon" :src="badge.icon" width="36" height="36"
                 :style="{ filter: badge.earned ? 'none' : 'grayscale(1) brightness(0.4)', transition: 'filter 0.3s' }" />
               <span v-else :style="{ fontSize: '1.8rem', lineHeight: 1, opacity: badge.earned ? 1 : 0.25 }">{{ badge.emoji }}</span>
-              <div :style="{ fontSize: '0.75rem', fontWeight: 600, color: badge.earned ? '#e4e6f4' : 'rgba(228,230,244,0.3)', lineHeight: 1.3 }">{{ badge.name }}</div>
-              <div style="font-size:0.65rem;color:rgba(228,230,244,0.25);line-height:1.4">{{ badge.description }}</div>
+              <div :style="{ fontSize: '0.75rem', fontWeight: 600, color: badge.earned ? '#e4e6f4' : 'rgba(228,230,244,0.3)', lineHeight: 1.3 }">{{ t('badges.name.' + badge.id) }}</div>
+              <div style="font-size:0.65rem;color:rgba(228,230,244,0.25);line-height:1.4">{{ t('badges.desc.' + badge.id) }}</div>
               <div v-if="badge.earned"
                 style="position:absolute;top:8px;right:10px;font-size:0.6rem;font-weight:700;color:#86efac">✓</div>
             </div>
@@ -122,6 +122,7 @@ import AppSidebar from '@/components/AppSidebar.vue'
 import AppHeader  from '@/components/AppHeader.vue'
 import { useAuthStore }  from '@/stores/auth'
 import { useLearnStore } from '@/stores/learn'
+import { useLocale } from '@/composables/useLocale'
 import { courses } from '@/data/learn'
 import VueApexCharts from 'vue3-apexcharts'
 
@@ -196,27 +197,28 @@ const CAREER_PATHS = [
 
 const _di = (name) => `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-original.svg`
 const ALL_BADGES = [
-  { id: 'first_lesson',    emoji: '🌱', icon: null,                    name: 'Prima Lezione',     description: 'Completa la tua prima lezione' },
-  { id: 'streak_3',        emoji: '🔥', icon: null,                    name: 'Streak 3 giorni',   description: '3 giorni consecutivi di studio' },
-  { id: 'streak_7',        emoji: '⚡', icon: null,                    name: 'Streak 7 giorni',   description: '7 giorni consecutivi di studio' },
-  { id: 'node_beginner',   emoji: null, icon: _di('nodejs'),           name: 'Node Beginner',     description: 'Completa 5 lezioni Node.js' },
-  { id: 'quiz_ace',        emoji: '🏅', icon: null,                    name: 'Quiz Ace',          description: 'Tutte le risposte corrette in un quiz' },
-  { id: 'junior_frontend', emoji: null, icon: _di('vuejs'),            name: 'Frontend Junior',   description: 'Completa il percorso Frontend Junior' },
-  { id: 'mid_frontend',    emoji: null, icon: _di('vuejs'),            name: 'Frontend Mid',      description: 'Completa il percorso Frontend Mid' },
-  { id: 'junior_backend',  emoji: null, icon: _di('nodejs'),           name: 'Backend JS Junior', description: 'Completa il percorso Backend JS Junior' },
-  { id: 'mid_backend_js',  emoji: null, icon: _di('nodejs'),           name: 'Backend JS Mid',    description: 'Completa il percorso Backend JS Mid' },
-  { id: 'junior_php',      emoji: null, icon: _di('php'),              name: 'PHP Junior',        description: 'Completa il percorso PHP Junior' },
-  { id: 'mid_php',         emoji: null, icon: _di('php'),              name: 'PHP Mid',           description: 'Completa il percorso PHP Mid' },
-  { id: 'devops_starter',  emoji: null, icon: _di('git'),              name: 'DevOps Starter',    description: 'Completa il percorso DevOps Starter' },
-  { id: 'devops_engineer', emoji: null, icon: _di('git'),              name: 'DevOps Engineer',   description: 'Completa il percorso DevOps Engineer' },
-  { id: 'full_stack_js',   emoji: null, icon: _di('javascript'),       name: 'Full Stack JS',     description: 'Completa il percorso Full Stack JS' },
-  { id: 'sql_master',      emoji: null, icon: _di('mysql'),            name: 'SQL Master',        description: 'Completa tutti i livelli SQL' },
-  { id: 'data_engineer',   emoji: null, icon: _di('redis'),            name: 'Data Engineer',     description: 'Completa il percorso Data Engineer' },
-  { id: 'master',          emoji: '⭐', icon: null,                    name: 'Full Stack',        description: `Completa tutti i corsi disponibili` },
+  { id: 'first_lesson',    emoji: '🌱', icon: null              },
+  { id: 'streak_3',        emoji: '🔥', icon: null              },
+  { id: 'streak_7',        emoji: '⚡', icon: null              },
+  { id: 'node_beginner',   emoji: null, icon: _di('nodejs')     },
+  { id: 'quiz_ace',        emoji: '🏅', icon: null              },
+  { id: 'junior_frontend', emoji: null, icon: _di('vuejs')      },
+  { id: 'mid_frontend',    emoji: null, icon: _di('vuejs')      },
+  { id: 'junior_backend',  emoji: null, icon: _di('nodejs')     },
+  { id: 'mid_backend_js',  emoji: null, icon: _di('nodejs')     },
+  { id: 'junior_php',      emoji: null, icon: _di('php')        },
+  { id: 'mid_php',         emoji: null, icon: _di('php')        },
+  { id: 'devops_starter',  emoji: null, icon: _di('git')        },
+  { id: 'devops_engineer', emoji: null, icon: _di('git')        },
+  { id: 'full_stack_js',   emoji: null, icon: _di('javascript') },
+  { id: 'sql_master',      emoji: null, icon: _di('mysql')      },
+  { id: 'data_engineer',   emoji: null, icon: _di('redis')      },
+  { id: 'master',          emoji: '⭐', icon: null              },
 ]
 
 const auth  = useAuthStore()
 const learn = useLearnStore()
+const { t } = useLocale()
 const stats = computed(() => auth.stats)
 
 function courseProgress(course) {

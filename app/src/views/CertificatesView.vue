@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;height:100vh;background:#05050f;overflow:hidden">
+  <div style="display:flex;height:100vh;background:var(--bg-base);overflow:hidden">
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
       <AppHeader :breadcrumbs="[{ label: 'Certificati' }]" />

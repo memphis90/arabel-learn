@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;height:100vh;background:#05050f;position:relative;overflow:hidden">
+  <div style="display:flex;height:100vh;background:var(--bg-base);position:relative;overflow:hidden">
     <StarBackground />
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1">
@@ -20,10 +20,10 @@
             <div style="display:flex;align-items:center;gap:16px">
               <CourseIcon :course-id="course.id" />
               <div style="flex:1">
-                <h2 style="margin:0 0 3px;font-size:1.2rem;font-weight:700;color:#e4e6f4;letter-spacing:-0.01em">{{ course.name }}</h2>
-                <p style="margin:0 0 10px;font-size:0.8rem;color:rgba(228,230,244,0.45)">{{ course.tagline }}</p>
+                <h2 style="margin:0 0 3px;font-size:1.2rem;font-weight:700;color:var(--text-1);letter-spacing:-0.01em">{{ course.name }}</h2>
+                <p style="margin:0 0 10px;font-size:0.8rem;color:rgba(var(--rgb-text),0.45)">{{ course.tagline }}</p>
                 <div style="display:flex;align-items:center;gap:10px">
-                  <div style="flex:1;height:5px;border-radius:99px;background:rgba(255,255,255,0.07);overflow:hidden">
+                  <div style="flex:1;height:5px;border-radius:99px;background:rgba(var(--rgb-border),0.07);overflow:hidden">
                     <div :style="{ height:'100%', width:progress.pct+'%', background:`rgb(${course.colorRgb})`, borderRadius:'99px', transition:'width 0.6s' }" />
                   </div>
                   <span :style="{ fontSize:'0.72rem', fontWeight:700, color:`rgb(${course.colorRgb})`, flexShrink:0 }">{{ progress.done }}/{{ progress.total }}</span>
@@ -41,11 +41,11 @@
                 width:'26px', height:'26px', borderRadius:'50%', flexShrink:0,
                 display:'flex', alignItems:'center', justifyContent:'center',
                 fontSize:'0.65rem', fontWeight:700,
-                background: levelDone(level) ? `rgba(${course.colorRgb},0.2)` : 'rgba(255,255,255,0.06)',
-                border:`1.5px solid ${levelDone(level) ? `rgba(${course.colorRgb},0.6)` : 'rgba(255,255,255,0.12)'}`,
-                color: levelDone(level) ? `rgb(${course.colorRgb})` : 'rgba(228,230,244,0.4)',
+                background: levelDone(level) ? `rgba(${course.colorRgb},0.2)` : 'rgba(var(--rgb-border),0.06)',
+                border:`1.5px solid ${levelDone(level) ? `rgba(${course.colorRgb},0.6)` : 'rgba(var(--rgb-border),0.12)'}`,
+                color: levelDone(level) ? `rgb(${course.colorRgb})` : 'rgba(var(--rgb-text),0.4)',
               }">{{ levelDone(level) ? '✓' : li + 1 }}</div>
-              <span :style="{ fontSize:'0.78rem', fontWeight:600, letterSpacing:'0.05em', color: levelDone(level) ? `rgb(${course.colorRgb})` : 'rgba(228,230,244,0.5)' }">
+              <span :style="{ fontSize:'0.78rem', fontWeight:600, letterSpacing:'0.05em', color: levelDone(level) ? `rgb(${course.colorRgb})` : 'rgba(var(--rgb-text),0.5)' }">
                 {{ level.name.toUpperCase() }}
               </span>
               <span v-if="level.tier" :style="{
@@ -61,7 +61,7 @@
             <!-- Items -->
             <div style="position:relative;padding-left:28px">
               <!-- Vertical track -->
-              <div style="position:absolute;left:12px;top:18px;bottom:18px;width:2px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,0.06)">
+              <div style="position:absolute;left:12px;top:18px;bottom:18px;width:2px;border-radius:99px;overflow:hidden;background:rgba(var(--rgb-border),0.06)">
                 <div :style="{
                   height: levelProgress(level) + '%',
                   background:`linear-gradient(to bottom, rgba(${course.colorRgb},0.8), rgba(${course.colorRgb},0.3))`,
@@ -93,11 +93,11 @@
                     background:
                       itemStatus(item.id) === 'done'    ? `rgb(${course.colorRgb})` :
                       itemStatus(item.id) === 'current' ? `rgba(${course.colorRgb},0.18)` :
-                      'rgba(255,255,255,0.05)',
+                      'rgba(var(--rgb-border),0.05)',
                     border:`2.5px solid ${
                       itemStatus(item.id) === 'done'    ? `rgba(${course.colorRgb},0.9)` :
                       itemStatus(item.id) === 'current' ? `rgb(${course.colorRgb})` :
-                      'rgba(255,255,255,0.12)'
+                      'rgba(var(--rgb-border),0.12)'
                     }`,
                     boxShadow:
                       itemStatus(item.id) === 'done'    ? `0 2px 12px rgba(${course.colorRgb},0.4)` :
@@ -106,7 +106,7 @@
                     color:
                       itemStatus(item.id) === 'done'    ? '#fff' :
                       itemStatus(item.id) === 'current' ? `rgb(${course.colorRgb})` :
-                      'rgba(228,230,244,0.25)',
+                      'rgba(var(--rgb-text),0.25)',
                   }">
                   <svg v-if="itemStatus(item.id) === 'done'" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
@@ -118,19 +118,19 @@
                 <div :style="{
                   flex:1, display:'flex', alignItems:'center', justifyContent:'space-between',
                   padding:'11px 15px', borderRadius:'12px',
-                  background: itemStatus(item.id) === 'current' ? `rgba(${course.colorRgb},0.07)` : 'rgba(255,255,255,0.02)',
-                  border:`1px solid ${itemStatus(item.id) === 'current' ? `rgba(${course.colorRgb},0.25)` : 'rgba(255,255,255,0.05)'}`,
+                  background: itemStatus(item.id) === 'current' ? `rgba(${course.colorRgb},0.07)` : 'rgba(var(--rgb-border),0.02)',
+                  border:`1px solid ${itemStatus(item.id) === 'current' ? `rgba(${course.colorRgb},0.25)` : 'rgba(var(--rgb-border),0.05)'}`,
                   transition:'background 0.2s, border-color 0.2s',
                 }"
                 @mouseover="e => { if(itemStatus(item.id) !== 'locked') { e.currentTarget.style.background=`rgba(${course.colorRgb},0.1)`; e.currentTarget.style.borderColor=`rgba(${course.colorRgb},0.3)` }}"
-                @mouseout="e => { e.currentTarget.style.background = itemStatus(item.id) === 'current' ? `rgba(${course.colorRgb},0.07)` : 'rgba(255,255,255,0.02)'; e.currentTarget.style.borderColor = itemStatus(item.id) === 'current' ? `rgba(${course.colorRgb},0.25)` : 'rgba(255,255,255,0.05)' }">
+                @mouseout="e => { e.currentTarget.style.background = itemStatus(item.id) === 'current' ? `rgba(${course.colorRgb},0.07)` : 'rgba(var(--rgb-border),0.02)'; e.currentTarget.style.borderColor = itemStatus(item.id) === 'current' ? `rgba(${course.colorRgb},0.25)` : 'rgba(var(--rgb-border),0.05)' }">
                   <div style="display:flex;align-items:center;gap:8px">
-                    <span :style="{ fontSize:'0.84rem', fontWeight: itemStatus(item.id) === 'current' ? 600 : 400, color:'#e4e6f4' }">{{ item.title }}</span>
+                    <span :style="{ fontSize:'0.84rem', fontWeight: itemStatus(item.id) === 'current' ? 600 : 400, color:'var(--text-1)' }">{{ item.title }}</span>
                     <span v-if="itemStatus(item.id) === 'current'" :style="{ fontSize:'0.6rem', padding:'1px 6px', borderRadius:'4px', background:`rgba(${course.colorRgb},0.15)`, border:`1px solid rgba(${course.colorRgb},0.3)`, color:`rgb(${course.colorRgb})`, fontWeight:700, letterSpacing:'0.04em' }">NEXT</span>
                   </div>
                   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
                     <span v-if="item.type === 'quiz'" style="font-size:0.62rem;padding:2px 7px;border-radius:4px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#c084fc;font-weight:600">QUIZ</span>
-                    <span :style="{ fontSize:'0.72rem', color: itemStatus(item.id) === 'done' ? `rgba(${course.colorRgb},0.7)` : 'rgba(228,230,244,0.28)' }">+{{ item.xp }} XP</span>
+                    <span :style="{ fontSize:'0.72rem', color: itemStatus(item.id) === 'done' ? `rgba(${course.colorRgb},0.7)` : 'rgba(var(--rgb-text),0.28)' }">+{{ item.xp }} XP</span>
                   </div>
                 </div>
 
@@ -142,7 +142,7 @@
           <div v-if="progress.pct === 100" style="margin-top:8px;text-align:center;padding:22px;border-radius:16px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2)">
             <div style="font-size:2.2rem;margin-bottom:6px">🏆</div>
             <div style="font-size:0.95rem;font-weight:700;color:#fbbf24;margin-bottom:3px">Corso completato!</div>
-            <div style="font-size:0.78rem;color:rgba(228,230,244,0.38)">Hai completato tutte le lezioni di {{ course.name }}</div>
+            <div style="font-size:0.78rem;color:rgba(var(--rgb-text),0.38)">Hai completato tutte le lezioni di {{ course.name }}</div>
           </div>
 
         </div>

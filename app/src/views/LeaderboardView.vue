@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;height:100vh;background:#05050f;position:relative;overflow:hidden">
+  <div style="display:flex;height:100vh;background:var(--bg-base);position:relative;overflow:hidden">
     <StarBackground />
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1">
@@ -20,8 +20,8 @@
 
           <div style="text-align:center;padding:80px 20px">
             <div style="font-size:3rem;margin-bottom:16px">🏆</div>
-            <h2 style="margin:0 0 8px;font-size:1.4rem;font-weight:700;color:#e4e6f4">Classifiche</h2>
-            <p style="margin:0 0 24px;font-size:0.9rem;color:rgba(228,230,244,0.4)">
+            <h2 style="margin:0 0 8px;font-size:1.4rem;font-weight:700;color:var(--text-1)">Classifiche</h2>
+            <p style="margin:0 0 24px;font-size:0.9rem;color:rgba(var(--rgb-text),0.4)">
               Prossimamente — compete con gli altri studenti per scalare la classifica
             </p>
             <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:99px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);font-size:0.78rem;color:#818cf8;font-weight:600">

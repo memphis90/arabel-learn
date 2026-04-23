@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;height:100vh;background:#05050f;position:relative;overflow:hidden">
+  <div style="display:flex;height:100vh;background:var(--bg-base);position:relative;overflow:hidden">
     <StarBackground />
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1">
@@ -15,7 +15,7 @@
           <div style="margin-bottom:24px;display:flex;align-items:center;justify-content:space-between">
             <div>
               <div :style="{ fontSize: '0.72rem', color: `rgba(${course.colorRgb},0.8)`, fontWeight: 600, letterSpacing: '0.05em', marginBottom: '4px' }">{{ course.name.toUpperCase() }}</div>
-              <h2 style="margin:0;font-size:1.3rem;font-weight:700;color:#e4e6f4;letter-spacing:-0.02em">{{ lesson.title }}</h2>
+              <h2 style="margin:0;font-size:1.3rem;font-weight:700;color:var(--text-1);letter-spacing:-0.02em">{{ lesson.title }}</h2>
             </div>
             <div :style="{ padding: '5px 12px', borderRadius: '99px', background: `rgba(${course.colorRgb},0.1)`, border: `1px solid rgba(${course.colorRgb},0.25)`, fontSize: '0.78rem', fontWeight: 600, color: `rgb(${course.colorRgb})` }">
               +{{ lesson.xp }} XP
@@ -25,11 +25,11 @@
           <!-- Blocks -->
           <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:28px">
             <template v-for="(block, i) in lesson.blocks" :key="i">
-              <p v-if="block.type === 'text'" style="margin:0 0 4px;font-size:0.9rem;line-height:1.75;color:rgba(228,230,244,0.82)" v-html="renderMd(block.md)" />
+              <p v-if="block.type === 'text'" style="margin:0 0 4px;font-size:0.9rem;line-height:1.75;color:rgba(var(--rgb-text),0.82)" v-html="renderMd(block.md)" />
               <div v-else-if="block.type === 'keypoints'" style="margin:4px 0;padding:14px 18px;border-radius:12px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15)">
                 <div v-if="block.title" style="font-size:0.75rem;font-weight:700;color:rgba(99,102,241,0.8);letter-spacing:0.05em;margin-bottom:10px">{{ block.title.toUpperCase() }}</div>
                 <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px">
-                  <li v-for="(pt, pi) in block.points" :key="pi" style="display:flex;align-items:flex-start;gap:8px;font-size:0.85rem;color:rgba(228,230,244,0.75);line-height:1.5">
+                  <li v-for="(pt, pi) in block.points" :key="pi" style="display:flex;align-items:flex-start;gap:8px;font-size:0.85rem;color:rgba(var(--rgb-text),0.75);line-height:1.5">
                     <span :style="{ color: `rgb(${course.colorRgb})`, marginTop: '2px', flexShrink: 0 }">›</span>
                     <span v-html="renderMd(pt)" />
                   </li>
@@ -47,8 +47,8 @@
               <div v-else-if="block.type === 'exercise'" style="border-radius:14px;border:1px solid rgba(168,85,247,0.2);overflow:hidden">
                 <div style="padding:14px 18px;background:rgba(168,85,247,0.06)">
                   <div style="font-size:0.7rem;font-weight:700;color:rgba(168,85,247,0.8);letter-spacing:0.06em;margin-bottom:8px">⚡ ESERCIZIO</div>
-                  <p style="margin:0 0 8px;font-size:0.875rem;line-height:1.6;color:rgba(228,230,244,0.85)" v-html="renderMd(block.prompt)" />
-                  <p v-if="block.hint" style="margin:0;font-size:0.78rem;color:rgba(228,230,244,0.4);font-style:italic" v-html="'💡 ' + renderMd(block.hint)" />
+                  <p style="margin:0 0 8px;font-size:0.875rem;line-height:1.6;color:rgba(var(--rgb-text),0.85)" v-html="renderMd(block.prompt)" />
+                  <p v-if="block.hint" style="margin:0;font-size:0.78rem;color:rgba(var(--rgb-text),0.4);font-style:italic" v-html="'💡 ' + renderMd(block.hint)" />
                 </div>
                 <div style="border-top:1px solid rgba(168,85,247,0.12)">
                   <button @click="toggleSolution(i)" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 18px;border:none;background:transparent;color:rgba(168,85,247,0.6);font-size:0.78rem;font-weight:600;cursor:pointer;transition:background 0.2s"
@@ -92,11 +92,11 @@
           </div>
 
           <!-- Prev / Next -->
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.05)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:20px;border-top:1px solid rgba(var(--rgb-border),0.05)">
             <button @click="prev ? navigateItem(prev) : $router.push({ name: 'course', params: { id: courseId } })"
-              style="display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.07);background:transparent;color:rgba(228,230,244,0.5);font-size:0.82rem;cursor:pointer;transition:all 0.2s"
-              @mouseover="e => { e.currentTarget.style.background='rgba(255,255,255,0.04)'; e.currentTarget.style.color='#e4e6f4' }"
-              @mouseout="e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='rgba(228,230,244,0.5)' }">
+              style="display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;border:1px solid rgba(var(--rgb-border),0.07);background:transparent;color:rgba(var(--rgb-text),0.5);font-size:0.82rem;cursor:pointer;transition:all 0.2s"
+              @mouseover="e => { e.currentTarget.style.background='rgba(var(--rgb-border),0.04)'; e.currentTarget.style.color='var(--text-1)' }"
+              @mouseout="e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='rgba(var(--rgb-text),0.5)' }">
               ‹ {{ prev ? prev.title : 'Torna al corso' }}
             </button>
             <button v-if="next" @click="navigateItem(next)"

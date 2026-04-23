@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;height:100vh;background:#05050f;overflow:hidden">
+  <div style="display:flex;height:100vh;background:var(--bg-base);overflow:hidden">
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
       <AppHeader :breadcrumbs="[{ label: t('nav.courses') }]" />
@@ -17,15 +17,15 @@
                 :style="{
                   padding: '6px 14px', borderRadius: '99px', border: '1px solid',
                   fontSize: '0.78rem', fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s',
-                  borderColor: activeCategory === f ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.08)',
+                  borderColor: activeCategory === f ? 'rgba(99,102,241,0.5)' : 'rgba(var(--rgb-border),0.08)',
                   background:  activeCategory === f ? 'rgba(99,102,241,0.16)' : 'transparent',
-                  color:       activeCategory === f ? '#a5b4fc' : 'rgba(228,230,244,0.45)',
+                  color:       activeCategory === f ? '#a5b4fc' : 'rgba(var(--rgb-text),0.45)',
                 }"
               >{{ f === 'all' ? t('courses.filter_all') : f }}</button>
             </div>
 
             <!-- Availability toggle -->
-            <div style="display:flex;border-radius:8px;border:1px solid rgba(255,255,255,0.08);overflow:hidden;flex-shrink:0">
+            <div style="display:flex;border-radius:8px;border:1px solid rgba(var(--rgb-border),0.08);overflow:hidden;flex-shrink:0">
               <button
                 v-for="opt in availFilters" :key="opt.value"
                 @click="activeAvail = opt.value"
@@ -33,7 +33,7 @@
                   padding: '6px 12px', border: 'none', cursor: 'pointer',
                   fontSize: '0.75rem', fontWeight: 500, transition: 'all 0.15s',
                   background: activeAvail === opt.value ? 'rgba(99,102,241,0.2)' : 'transparent',
-                  color:      activeAvail === opt.value ? '#a5b4fc' : 'rgba(228,230,244,0.35)',
+                  color:      activeAvail === opt.value ? '#a5b4fc' : 'rgba(var(--rgb-text),0.35)',
                 }"
               >{{ opt.label }}</button>
             </div>
@@ -43,7 +43,7 @@
           <!-- Results -->
           <template v-if="filteredCategories.length">
             <div v-for="cat in filteredCategories" :key="cat.name" style="margin-bottom:40px">
-              <h2 style="margin:0 0 14px;font-size:0.72rem;font-weight:700;color:rgba(228,230,244,0.32);letter-spacing:0.1em;text-transform:uppercase">
+              <h2 style="margin:0 0 14px;font-size:0.72rem;font-weight:700;color:rgba(var(--rgb-text),0.32);letter-spacing:0.1em;text-transform:uppercase">
                 {{ cat.name }}
                 <span style="margin-left:6px;font-weight:400;opacity:0.6">({{ cat.active.length + cat.soon.length }})</span>
               </h2>
@@ -52,21 +52,21 @@
                 <!-- corso attivo -->
                 <div v-for="course in cat.active" :key="course.id"
                   @click="$router.push({ name: 'course', params: { id: course.id } })"
-                  style="border-radius:16px;border:1px solid rgba(255,255,255,0.07);background:rgba(12,12,28,0.7);cursor:pointer;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;overflow:hidden"
+                  style="border-radius:16px;border:1px solid rgba(var(--rgb-border),0.07);background:rgba(var(--rgb-surface),0.7);cursor:pointer;transition:transform 0.2s,border-color 0.2s,box-shadow 0.2s;overflow:hidden"
                   @mouseover="e => { e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.borderColor=`rgba(${course.colorRgb},0.45)`; e.currentTarget.style.boxShadow=`0 16px 40px rgba(${course.colorRgb},0.12)` }"
-                  @mouseout="e => { e.currentTarget.style.transform='none'; e.currentTarget.style.borderColor='rgba(255,255,255,0.07)'; e.currentTarget.style.boxShadow='none' }">
+                  @mouseout="e => { e.currentTarget.style.transform='none'; e.currentTarget.style.borderColor='rgba(var(--rgb-border),0.07)'; e.currentTarget.style.boxShadow='none' }">
                   <div :style="{ height:'76px', display:'flex', alignItems:'center', justifyContent:'center', background:`linear-gradient(135deg,rgba(${course.colorRgb},0.18),rgba(${course.colorRgb},0.06))`, position:'relative' }">
                     <CourseIcon :course-id="course.id" />
                     <div v-if="progress(course).pct === 100" style="position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#4ade80">✓</div>
                   </div>
                   <div style="padding:11px 13px 13px">
-                    <div style="font-size:0.88rem;font-weight:600;color:#e4e6f4;margin-bottom:2px">{{ course.name }}</div>
-                    <div style="font-size:0.71rem;color:rgba(228,230,244,0.36);margin-bottom:9px;line-height:1.35">{{ course.tagline }}</div>
+                    <div style="font-size:0.88rem;font-weight:600;color:var(--text-1);margin-bottom:2px">{{ course.name }}</div>
+                    <div style="font-size:0.71rem;color:rgba(var(--rgb-text),0.36);margin-bottom:9px;line-height:1.35">{{ course.tagline }}</div>
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-                      <span style="font-size:0.67rem;color:rgba(228,230,244,0.32)">{{ progress(course).done }}/{{ progress(course).total }}</span>
+                      <span style="font-size:0.67rem;color:rgba(var(--rgb-text),0.32)">{{ progress(course).done }}/{{ progress(course).total }}</span>
                       <span :style="{ fontSize:'0.67rem', fontWeight:600, color:`rgb(${course.colorRgb})` }">{{ progress(course).pct }}%</span>
                     </div>
-                    <div style="height:3px;border-radius:99px;background:rgba(255,255,255,0.07);overflow:hidden">
+                    <div style="height:3px;border-radius:99px;background:rgba(var(--rgb-border),0.07);overflow:hidden">
                       <div :style="{ height:'100%', width:progress(course).pct+'%', background:`rgb(${course.colorRgb})`, borderRadius:'99px', transition:'width 0.4s' }" />
                     </div>
                   </div>
@@ -74,13 +74,13 @@
 
                 <!-- corso coming soon -->
                 <div v-for="course in cat.soon" :key="course.id"
-                  style="border-radius:16px;border:1px solid rgba(255,255,255,0.04);background:rgba(12,12,28,0.3);overflow:hidden;cursor:default">
+                  style="border-radius:16px;border:1px solid rgba(var(--rgb-border),0.04);background:rgba(var(--rgb-surface),0.3);overflow:hidden;cursor:default">
                   <div :style="{ height:'76px', display:'flex', alignItems:'center', justifyContent:'center', background:`linear-gradient(135deg,rgba(${course.colorRgb},0.06),rgba(${course.colorRgb},0.02))` }">
                     <CourseIcon :course-id="course.id" style="opacity:0.35" />
                   </div>
                   <div style="padding:11px 13px 13px">
-                    <div style="font-size:0.88rem;font-weight:600;color:rgba(228,230,244,0.38);margin-bottom:2px">{{ course.name }}</div>
-                    <div style="font-size:0.71rem;color:rgba(228,230,244,0.2);margin-bottom:9px;line-height:1.35">{{ course.tagline }}</div>
+                    <div style="font-size:0.88rem;font-weight:600;color:rgba(var(--rgb-text),0.38);margin-bottom:2px">{{ course.name }}</div>
+                    <div style="font-size:0.71rem;color:rgba(var(--rgb-text),0.2);margin-bottom:9px;line-height:1.35">{{ course.tagline }}</div>
                     <div style="display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.12);font-size:0.66rem;color:rgba(129,140,248,0.5);font-weight:500;letter-spacing:0.02em">
                       {{ t('courses.soon_badge') }}
                     </div>
@@ -92,7 +92,7 @@
           </template>
 
           <!-- Empty state -->
-          <div v-else style="text-align:center;padding:60px 0;color:rgba(228,230,244,0.25);font-size:0.875rem">
+          <div v-else style="text-align:center;padding:60px 0;color:rgba(var(--rgb-text),0.25);font-size:0.875rem">
             {{ t('courses.no_results') }}
           </div>
 
