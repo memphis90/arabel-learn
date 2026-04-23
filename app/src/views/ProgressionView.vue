@@ -93,7 +93,7 @@
                 transition: 'opacity 0.2s',
                 position: 'relative',
               }">
-              <i v-if="badge.devicon" :class="badge.devicon" style="font-size:2rem" />
+              <img v-if="badge.icon" :src="badge.icon" width="36" height="36" :style="{ filter: badge.earned ? 'none' : 'grayscale(1)', transition: 'filter 0.2s' }" />
               <span v-else style="font-size:1.8rem;line-height:1">{{ badge.emoji }}</span>
               <div style="font-size:0.75rem;font-weight:600;color:#e4e6f4;line-height:1.3">{{ badge.name }}</div>
               <div style="font-size:0.65rem;color:rgba(228,230,244,0.4);line-height:1.4">{{ badge.description }}</div>
@@ -209,23 +209,24 @@ const CAREER_PATHS = [
   },
 ]
 
+const _di = (name) => `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${name}/${name}-original.svg`
 const ALL_BADGES = [
-  { id: 'first_lesson',    emoji: '🌱', devicon: null,                                    name: 'Prima Lezione',     description: 'Completa la tua prima lezione' },
-  { id: 'streak_3',        emoji: '🔥', devicon: null,                                    name: 'Streak 3 giorni',   description: '3 giorni consecutivi di studio' },
-  { id: 'streak_7',        emoji: '⚡', devicon: null,                                    name: 'Streak 7 giorni',   description: '7 giorni consecutivi di studio' },
-  { id: 'node_beginner',   emoji: null, devicon: 'devicon-nodejs-original colored',       name: 'Node Beginner',     description: 'Completa 5 lezioni Node.js' },
-  { id: 'quiz_ace',        emoji: '🏅', devicon: null,                                    name: 'Quiz Ace',          description: 'Tutte le risposte corrette in un quiz' },
-  { id: 'junior_frontend', emoji: null, devicon: 'devicon-vuejs-original colored',        name: 'Frontend Junior',   description: 'Completa il percorso Frontend Junior' },
-  { id: 'mid_frontend',    emoji: null, devicon: 'devicon-vuejs-original colored',        name: 'Frontend Mid',      description: 'Completa il percorso Frontend Mid' },
-  { id: 'junior_backend',  emoji: null, devicon: 'devicon-nodejs-original colored',       name: 'Backend JS Junior', description: 'Completa il percorso Backend JS Junior' },
-  { id: 'mid_backend_js',  emoji: null, devicon: 'devicon-nodejs-original colored',       name: 'Backend JS Mid',    description: 'Completa il percorso Backend JS Mid' },
-  { id: 'junior_php',      emoji: null, devicon: 'devicon-php-original colored',          name: 'PHP Junior',        description: 'Completa il percorso PHP Junior' },
-  { id: 'mid_php',         emoji: null, devicon: 'devicon-php-original colored',          name: 'PHP Mid',           description: 'Completa il percorso PHP Mid' },
-  { id: 'devops_starter',  emoji: null, devicon: 'devicon-git-original colored',          name: 'DevOps Starter',    description: 'Completa il percorso DevOps Starter' },
-  { id: 'devops_engineer', emoji: null, devicon: 'devicon-git-original colored',          name: 'DevOps Engineer',   description: 'Completa il percorso DevOps Engineer' },
-  { id: 'full_stack_js',   emoji: null, devicon: 'devicon-javascript-original colored',   name: 'Full Stack JS',     description: 'Completa il percorso Full Stack JS' },
-  { id: 'sql_master',      emoji: null, devicon: 'devicon-mysql-original colored',        name: 'SQL Master',        description: 'Completa tutti i livelli SQL' },
-  { id: 'data_engineer',   emoji: null, devicon: 'devicon-redis-original colored',        name: 'Data Engineer',     description: 'Completa il percorso Data Engineer' },
+  { id: 'first_lesson',    emoji: '🌱', icon: null,                    name: 'Prima Lezione',     description: 'Completa la tua prima lezione' },
+  { id: 'streak_3',        emoji: '🔥', icon: null,                    name: 'Streak 3 giorni',   description: '3 giorni consecutivi di studio' },
+  { id: 'streak_7',        emoji: '⚡', icon: null,                    name: 'Streak 7 giorni',   description: '7 giorni consecutivi di studio' },
+  { id: 'node_beginner',   emoji: null, icon: _di('nodejs'),           name: 'Node Beginner',     description: 'Completa 5 lezioni Node.js' },
+  { id: 'quiz_ace',        emoji: '🏅', icon: null,                    name: 'Quiz Ace',          description: 'Tutte le risposte corrette in un quiz' },
+  { id: 'junior_frontend', emoji: null, icon: _di('vuejs'),            name: 'Frontend Junior',   description: 'Completa il percorso Frontend Junior' },
+  { id: 'mid_frontend',    emoji: null, icon: _di('vuejs'),            name: 'Frontend Mid',      description: 'Completa il percorso Frontend Mid' },
+  { id: 'junior_backend',  emoji: null, icon: _di('nodejs'),           name: 'Backend JS Junior', description: 'Completa il percorso Backend JS Junior' },
+  { id: 'mid_backend_js',  emoji: null, icon: _di('nodejs'),           name: 'Backend JS Mid',    description: 'Completa il percorso Backend JS Mid' },
+  { id: 'junior_php',      emoji: null, icon: _di('php'),              name: 'PHP Junior',        description: 'Completa il percorso PHP Junior' },
+  { id: 'mid_php',         emoji: null, icon: _di('php'),              name: 'PHP Mid',           description: 'Completa il percorso PHP Mid' },
+  { id: 'devops_starter',  emoji: null, icon: _di('git'),              name: 'DevOps Starter',    description: 'Completa il percorso DevOps Starter' },
+  { id: 'devops_engineer', emoji: null, icon: _di('git'),              name: 'DevOps Engineer',   description: 'Completa il percorso DevOps Engineer' },
+  { id: 'full_stack_js',   emoji: null, icon: _di('javascript'),       name: 'Full Stack JS',     description: 'Completa il percorso Full Stack JS' },
+  { id: 'sql_master',      emoji: null, icon: _di('mysql'),            name: 'SQL Master',        description: 'Completa tutti i livelli SQL' },
+  { id: 'data_engineer',   emoji: null, icon: _di('redis'),            name: 'Data Engineer',     description: 'Completa il percorso Data Engineer' },
 ]
 
 const auth  = useAuthStore()
