@@ -212,6 +212,7 @@ const ALL_BADGES = [
   { id: 'full_stack_js',   emoji: null, icon: _di('javascript'),       name: 'Full Stack JS',     description: 'Completa il percorso Full Stack JS' },
   { id: 'sql_master',      emoji: null, icon: _di('mysql'),            name: 'SQL Master',        description: 'Completa tutti i livelli SQL' },
   { id: 'data_engineer',   emoji: null, icon: _di('redis'),            name: 'Data Engineer',     description: 'Completa il percorso Data Engineer' },
+  { id: 'master',          emoji: '⭐', icon: null,                    name: 'Full Stack',        description: `Completa tutti i corsi disponibili` },
 ]
 
 const auth  = useAuthStore()
@@ -274,9 +275,17 @@ const careerStats = computed(() =>
   })
 )
 
+const allCoursesComplete = computed(() =>
+  activeCourses.value.length > 0 &&
+  activeCourses.value.every(c => courseProgress(c).pct === 100)
+)
+
 const earnedBadges = computed(() => {
   const earned = new Set(auth.stats.badges || [])
-  return ALL_BADGES.map(b => ({ ...b, earned: earned.has(b.id) }))
+  return ALL_BADGES.map(b => ({
+    ...b,
+    earned: b.id === 'master' ? allCoursesComplete.value : earned.has(b.id),
+  }))
 })
 
 // TODO: real data needs session tracking (login/logout timestamps) from backend
