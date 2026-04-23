@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;height:100vh;background:#05050f;overflow:hidden">
+  <div style="display:flex;height:100vh;background:var(--bg-base);overflow:hidden">
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
       <AppHeader :breadcrumbs="[{ label: 'Progressione' }]" />
@@ -52,6 +52,95 @@ import CourseIcon from '@/components/CourseIcon.vue'
 import { useAuthStore }  from '@/stores/auth'
 import { useLearnStore } from '@/stores/learn'
 import { courses } from '@/data/learn'
+import VueApexCharts from 'vue3-apexcharts'
+
+const CAREER_PATHS = [
+  {
+    id: 'junior_frontend',
+    name: 'Frontend Junior',
+    emoji: '🎨',
+    items: ['vue-1-1','vue-1-2','vue-1-3','vue-1-4','vue-1-q','ts-1-1','ts-1-2','ts-1-3','ts-1-q'],
+  },
+  {
+    id: 'mid_frontend',
+    name: 'Frontend Mid',
+    emoji: '🖥️',
+    items: ['vue-1-1','vue-1-2','vue-1-3','vue-1-4','vue-1-q','vue-2-1','vue-2-2','vue-2-3','vue-2-4','vue-2-q','nuxt-3-1','nuxt-3-2','nuxt-3-3','nuxt-3-4','nuxt-3-q','ts-1-1','ts-1-2','ts-1-3','ts-1-q','ts-2-1','ts-2-2','ts-2-3','ts-2-q'],
+  },
+  {
+    id: 'junior_backend',
+    name: 'Backend JS Junior',
+    emoji: '⚙️',
+    items: ['nodejs-1-1','nodejs-1-2','nodejs-1-3','nodejs-1-q','express-1-1','express-1-2','express-1-3','express-1-q','sql-1-1','sql-1-2','sql-1-3','sql-1-q'],
+  },
+  {
+    id: 'mid_backend_js',
+    name: 'Backend JS Mid',
+    emoji: '🔧',
+    items: ['nodejs-1-1','nodejs-1-2','nodejs-1-3','nodejs-1-q','nodejs-2-1','nodejs-2-2','nodejs-2-3','nodejs-2-4','nodejs-2-q','nodejs-3-1','nodejs-3-2','nodejs-3-3','nodejs-3-4','nodejs-3-5','nodejs-3-q','express-1-1','express-1-2','express-1-3','express-1-q','express-2-1','express-2-2','express-2-3','express-2-q'],
+  },
+  {
+    id: 'junior_php',
+    name: 'PHP Junior',
+    emoji: '🐘',
+    items: ['php-1-1','php-1-2','php-1-3','php-1-q'],
+  },
+  {
+    id: 'mid_php',
+    name: 'PHP Mid',
+    emoji: '🐘',
+    items: ['php-1-1','php-1-2','php-1-3','php-1-q','php-2-1','php-2-2','php-2-3','php-2-q','sql-2-1','sql-2-2','sql-2-3','sql-2-q'],
+  },
+  {
+    id: 'devops_starter',
+    name: 'DevOps Starter',
+    emoji: '🚀',
+    items: ['git-1-1','git-1-2','git-1-3','git-1-q','linux-1-1','linux-1-2','linux-1-3','linux-1-q'],
+  },
+  {
+    id: 'devops_engineer',
+    name: 'DevOps Engineer',
+    emoji: '🛠️',
+    items: ['git-1-1','git-1-2','git-1-3','git-1-q','git-2-1','git-2-2','git-2-3','git-2-q','git-3-1','git-3-2','git-3-3','git-3-q','linux-1-1','linux-1-2','linux-1-3','linux-1-q','linux-2-1','linux-2-2','linux-2-3','linux-2-q','linux-3-1','linux-3-2','linux-3-3','linux-3-q','cicd-1-1','cicd-1-2','cicd-1-3','cicd-1-q','cicd-2-1','cicd-2-2','cicd-2-3','cicd-2-q','cicd-3-1','cicd-3-2','cicd-3-3','cicd-3-q'],
+  },
+  {
+    id: 'full_stack_js',
+    name: 'Full Stack JS',
+    emoji: '🌐',
+    items: ['vue-1-1','vue-1-2','vue-1-3','vue-1-4','vue-1-q','vue-2-1','vue-2-2','vue-2-3','vue-2-4','vue-2-q','nuxt-3-1','nuxt-3-2','nuxt-3-3','nuxt-3-4','nuxt-3-q','nodejs-1-1','nodejs-1-2','nodejs-1-3','nodejs-1-q','nodejs-2-1','nodejs-2-2','nodejs-2-3','nodejs-2-4','nodejs-2-q','express-1-1','express-1-2','express-1-3','express-1-q','express-2-1','express-2-2','express-2-3','express-2-q'],
+  },
+  {
+    id: 'sql_master',
+    name: 'SQL Master',
+    emoji: '🗄️',
+    items: ['sql-1-1','sql-1-2','sql-1-3','sql-1-q','sql-2-1','sql-2-2','sql-2-3','sql-2-q','sql-3-1','sql-3-2','sql-3-3','sql-3-q'],
+  },
+  {
+    id: 'data_engineer',
+    name: 'Data Engineer',
+    emoji: '📊',
+    items: ['sql-1-1','sql-1-2','sql-1-3','sql-1-q','sql-2-1','sql-2-2','sql-2-3','sql-2-q','sql-3-1','sql-3-2','sql-3-3','sql-3-q','redis-1-1','redis-1-2','redis-1-3','redis-1-q','redis-2-1','redis-2-2','redis-2-3','redis-2-q'],
+  },
+]
+
+const ALL_BADGES = [
+  { id: 'first_lesson',    emoji: '🌱', name: 'Prima Lezione',     description: 'Completa la tua prima lezione' },
+  { id: 'streak_3',        emoji: '🔥', name: 'Streak 3 giorni',   description: '3 giorni consecutivi di studio' },
+  { id: 'streak_7',        emoji: '⚡', name: 'Streak 7 giorni',   description: '7 giorni consecutivi di studio' },
+  { id: 'node_beginner',   emoji: '🟢', name: 'Node Beginner',     description: 'Completa 5 lezioni Node.js' },
+  { id: 'quiz_ace',        emoji: '🏅', name: 'Quiz Ace',          description: 'Tutte le risposte corrette in un quiz' },
+  { id: 'junior_frontend', emoji: '🎨', name: 'Frontend Junior',   description: 'Completa il percorso Frontend Junior' },
+  { id: 'mid_frontend',    emoji: '🖥️', name: 'Frontend Mid',      description: 'Completa il percorso Frontend Mid' },
+  { id: 'junior_backend',  emoji: '⚙️', name: 'Backend JS Junior', description: 'Completa il percorso Backend JS Junior' },
+  { id: 'mid_backend_js',  emoji: '🔧', name: 'Backend JS Mid',    description: 'Completa il percorso Backend JS Mid' },
+  { id: 'junior_php',      emoji: '🐘', name: 'PHP Junior',        description: 'Completa il percorso PHP Junior' },
+  { id: 'mid_php',         emoji: '🐘', name: 'PHP Mid',           description: 'Completa il percorso PHP Mid' },
+  { id: 'devops_starter',  emoji: '🚀', name: 'DevOps Starter',    description: 'Completa il percorso DevOps Starter' },
+  { id: 'devops_engineer', emoji: '🛠️', name: 'DevOps Engineer',   description: 'Completa il percorso DevOps Engineer' },
+  { id: 'full_stack_js',   emoji: '🌐', name: 'Full Stack JS',     description: 'Completa il percorso Full Stack JS' },
+  { id: 'sql_master',      emoji: '🗄️', name: 'SQL Master',        description: 'Completa tutti i livelli SQL' },
+  { id: 'data_engineer',   emoji: '📊', name: 'Data Engineer',     description: 'Completa il percorso Data Engineer' },
+]
 
 const auth  = useAuthStore()
 const learn = useLearnStore()
@@ -79,4 +168,26 @@ const activeCourseStats = computed(() =>
     .filter(c => c.done > 0)
     .sort((a, b) => b.pct - a.pct)
 )
+
+const careerStats = computed(() =>
+  CAREER_PATHS.map(career => {
+    const done = career.items.filter(id => learn.isCompleted(id)).length
+    const total = career.items.length
+    const pct = Math.round((done / total) * 100)
+    const unlocked = pct === 100
+    return { ...career, done, total, pct, unlocked }
+  })
+)
+
+const earnedBadges = computed(() => {
+  const earned = new Set(auth.stats.badges || [])
+  return ALL_BADGES.map(b => ({ ...b, earned: earned.has(b.id) }))
+})
+
+const studyTimeMockup = computed(() => {
+  // TODO: real data needs session tracking (login/logout timestamps) from backend
+  const week = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000))
+  const seed = (n) => ((week * 31 + n * 17) % 91) + 10
+  return [0, 1, 2, 3, 4, 5, 6].map(seed)
+})
 </script>
