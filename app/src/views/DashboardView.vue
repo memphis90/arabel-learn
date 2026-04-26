@@ -107,47 +107,39 @@
             </div>
           </div>
 
-          <!-- Certifications -->
-          <div style="margin-bottom:28px;padding:20px 24px;border-radius:16px;background:rgba(var(--rgb-surface),0.7);border:1px solid rgba(var(--rgb-border),0.07)">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-              <h2 style="margin:0;font-size:0.78rem;font-weight:600;color:rgba(var(--rgb-text),0.38);letter-spacing:0.08em">{{ t('dashboard.certifications') }}</h2>
-              <div style="font-size:0.68rem;padding:3px 9px;border-radius:99px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.18);color:rgba(129,140,248,0.6)">{{ t('dashboard.coming_soon') }}</div>
-            </div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
-              <div v-for="cert in certifications" :key="cert.id"
-                style="padding:14px 16px;border-radius:12px;border:1px solid rgba(var(--rgb-border),0.05);background:rgba(var(--rgb-border),0.02);opacity:0.55;position:relative;overflow:hidden">
-                <div :style="{ position:'absolute', top:0, left:0, right:0, height:'2px', background:`linear-gradient(90deg, rgba(${cert.colorRgb},0.6), rgba(${cert.colorRgb},0.1))` }" />
-                <div style="font-size:1.4rem;margin-bottom:8px">{{ cert.icon }}</div>
-                <div style="font-size:0.82rem;font-weight:600;color:rgba(var(--rgb-text),0.5);margin-bottom:3px">{{ cert.name }}</div>
-                <div style="font-size:0.7rem;color:rgba(var(--rgb-text),0.28)">{{ cert.desc }}</div>
-                <div style="margin-top:8px;height:3px;border-radius:99px;background:rgba(var(--rgb-border),0.05)">
-                  <div :style="{ height:'100%', width: cert.pct + '%', background:`rgba(${cert.colorRgb},0.4)`, borderRadius:'99px' }" />
-                </div>
-                <div style="font-size:0.65rem;color:rgba(var(--rgb-text),0.25);margin-top:4px">{{ cert.pct }}% completato</div>
-              </div>
-            </div>
-          </div>
-
           <!-- Leaderboard preview -->
           <div style="padding:20px 24px;border-radius:16px;background:rgba(var(--rgb-surface),0.7);border:1px solid rgba(var(--rgb-border),0.07)">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
               <h2 style="margin:0;font-size:0.78rem;font-weight:600;color:rgba(var(--rgb-text),0.38);letter-spacing:0.08em">{{ t('dashboard.leaderboard_week') }}</h2>
-              <button @click="$router.push({ name: 'leaderboard' })"
+              <button @click="$router.push({ name: 'network' })"
                 style="padding:5px 12px;border-radius:8px;border:1px solid rgba(var(--rgb-border),0.08);background:transparent;color:rgba(var(--rgb-text),0.45);font-size:0.75rem;cursor:pointer;transition:all 0.2s"
                 @mouseover="e => { e.currentTarget.style.color='var(--text-1)'; e.currentTarget.style.borderColor='rgba(var(--rgb-border),0.2)' }"
                 @mouseout="e => { e.currentTarget.style.color='rgba(var(--rgb-text),0.45)'; e.currentTarget.style.borderColor='rgba(var(--rgb-border),0.08)' }">
                 {{ t('dashboard.see_all') }}
               </button>
             </div>
+
+            <!-- Tabs -->
+            <div style="display:flex;gap:4px;margin-bottom:14px;padding:3px;border-radius:10px;background:rgba(var(--rgb-border),0.05);width:fit-content">
+              <button v-for="tab in ['Globale','Network']" :key="tab"
+                @click="lbTab = tab"
+                :style="{
+                  padding:'5px 14px', borderRadius:'8px', border:'none', cursor:'pointer',
+                  fontSize:'0.76rem', fontWeight:600, transition:'all 0.15s',
+                  background: lbTab === tab ? 'rgba(99,102,241,0.2)' : 'transparent',
+                  color:      lbTab === tab ? '#a5b4fc' : 'rgba(var(--rgb-text),0.38)',
+                }">{{ tab }}</button>
+            </div>
+
+            <!-- List -->
             <div style="display:flex;flex-direction:column;gap:6px">
-              <div v-for="(entry, i) in leaderboard" :key="i"
+              <div v-for="(entry, i) in activeLeaderboard" :key="entry.name"
                 :style="{
                   display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px',
                   borderRadius: '10px',
                   background: entry.isMe ? 'rgba(99,102,241,0.1)' : 'rgba(var(--rgb-border),0.02)',
                   border: `1px solid ${entry.isMe ? 'rgba(99,102,241,0.25)' : 'rgba(var(--rgb-border),0.05)'}`,
                 }">
-                <!-- Rank -->
                 <div :style="{
                   width: '26px', height: '26px', borderRadius: '50%', flexShrink: 0,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -156,26 +148,35 @@
                   fontSize: i < 3 ? '0.8rem' : '0.65rem', fontWeight: 700,
                   color: i === 0 ? '#fbbf24' : i === 1 ? '#94a3b8' : i === 2 ? '#b47850' : 'rgba(var(--rgb-text),0.35)',
                 }">{{ i < 3 ? ['🥇','🥈','🥉'][i] : i + 1 }}</div>
-                <!-- Avatar -->
                 <div :style="{
                   width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
-                  background: entry.isMe ? '#6366f1' : 'rgba(var(--rgb-border),0.08)',
+                  background: entry.isMe ? '#6366f1' : entry.color || 'rgba(var(--rgb-border),0.08)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.65rem', fontWeight: 700, color: '#fff',
                 }">{{ entry.initials }}</div>
-                <!-- Name -->
                 <div style="flex:1;min-width:0">
                   <div :style="{ fontSize: '0.83rem', fontWeight: entry.isMe ? 600 : 400, color: entry.isMe ? 'var(--text-1)' : 'rgba(var(--rgb-text),0.6)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }">
                     {{ entry.name }}{{ entry.isMe ? ' ' + t('dashboard.you') : '' }}
                   </div>
                 </div>
-                <!-- XP -->
                 <div style="text-align:right;flex-shrink:0">
                   <div style="font-size:0.82rem;font-weight:700;color:#818cf8">{{ entry.xp.toLocaleString() }}</div>
                   <div style="font-size:0.65rem;color:rgba(var(--rgb-text),0.3)">XP</div>
                 </div>
               </div>
+
+              <!-- Network empty state -->
+              <div v-if="lbTab === 'Network' && networkLeaderboard.length <= 1"
+                style="text-align:center;padding:28px 0;color:rgba(var(--rgb-text),0.25)">
+                <div style="font-size:1.6rem;margin-bottom:8px">🔗</div>
+                <div style="font-size:0.8rem;margin-bottom:10px">Connettiti ad altri utenti nel Network per vederli qui</div>
+                <button @click="$router.push({ name: 'network' })"
+                  style="padding:6px 16px;border-radius:8px;border:1px solid rgba(99,102,241,0.3);background:rgba(99,102,241,0.08);color:#a5b4fc;font-size:0.76rem;font-weight:600;cursor:pointer">
+                  Vai al Network
+                </button>
+              </div>
             </div>
+
             <div style="margin-top:12px;padding:10px;border-radius:8px;background:rgba(99,102,241,0.04);border:1px dashed rgba(99,102,241,0.15);text-align:center">
               <span style="font-size:0.75rem;color:rgba(var(--rgb-text),0.3)">{{ t('dashboard.leaderboard_note') }}</span>
             </div>
@@ -188,7 +189,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import AppSidebar  from '@/components/AppSidebar.vue'
 import AppHeader   from '@/components/AppHeader.vue'
 import XPBar       from '@/components/XPBar.vue'
@@ -239,23 +240,36 @@ const visibleCourses = computed(() => {
   return sorted.slice(0, 4)
 })
 
-// Certifications (placeholder — driven by course completion)
-const certifications = computed(() => [
-  { id: 'nodejs-cert',  name: 'Node.js Developer',   desc: 'Tutti i livelli Node.js',   icon: '⬡',  colorRgb: '34,197,94',  pct: Math.min(100, Math.round((courseProgress(courses.find(c=>c.id==='nodejs')||courses[0]).pct))) },
-  { id: 'express-cert', name: 'Express Engineer',    desc: 'Tutti i livelli Express',   icon: '⚡', colorRgb: '245,158,11', pct: Math.min(100, Math.round((courseProgress(courses.find(c=>c.id==='express')||courses[0]).pct))) },
-  { id: 'vue-cert',     name: 'Vue.js & Nuxt Dev',   desc: 'Vue + Nuxt completati',     icon: '◈',  colorRgb: '6,182,212',  pct: Math.min(100, Math.round((courseProgress(courses.find(c=>c.id==='vue-nuxt')||courses[0]).pct))) },
-  { id: 'ts-cert',      name: 'TypeScript Pro',      desc: 'Tutti i livelli TypeScript',icon: '▲',  colorRgb: '59,130,246', pct: Math.min(100, Math.round((courseProgress(courses.find(c=>c.id==='typescript')||courses[0]).pct))) },
-])
 
-// Leaderboard preview (mock until backend is live)
+const lbTab = ref('Globale')
+
 const meInitials = computed(() =>
   (user.value?.name || 'IO').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
 )
-const leaderboard = computed(() => [
-  { name: 'Marco B.',     initials: 'MB', xp: 1840, isMe: false },
-  { name: 'Sara L.',      initials: 'SL', xp: 1520, isMe: false },
-  { name: 'Luca T.',      initials: 'LT', xp: 1310, isMe: false },
-  { name: user.value?.name || 'Tu', initials: meInitials.value, xp: stats.value.xp, isMe: true },
-  { name: 'Anna R.',      initials: 'AR', xp: Math.max(0, stats.value.xp - 40), isMe: false },
-].sort((a, b) => b.xp - a.xp).slice(0, 5))
+
+const meEntry = computed(() => ({
+  name: user.value?.name || 'Tu', initials: meInitials.value, xp: stats.value.xp, isMe: true,
+}))
+
+const globalLeaderboard = computed(() => [
+  { name: 'codex_maximus', initials: 'CM', xp: 2840, color: '#6366f1' },
+  { name: 'fullstack_fx',  initials: 'FF', xp: 2510, color: '#10b981' },
+  { name: 'vuemaster3000', initials: 'VM', xp: 2190, color: '#06b6d4' },
+  { name: 'datadriven_lu', initials: 'DL', xp: 1980, color: '#f59e0b' },
+  { name: 'devops_bro',    initials: 'DB', xp: 1740, color: '#8b5cf6' },
+  { name: 'ph4ntom_sql',   initials: 'PS', xp: 1580, color: '#ec4899' },
+  meEntry.value,
+].sort((a, b) => b.xp - a.xp).slice(0, 6))
+
+// Mock: some users from network as "connected" with XP values
+const networkLeaderboard = computed(() => [
+  meEntry.value,
+  { name: 'fr4nco_dev',    initials: 'FD', xp: 1240, color: '#6366f1' },
+  { name: 'bytewitch',     initials: 'BW', xp: 980,  color: '#8b5cf6' },
+  { name: 'nullpointer99', initials: 'NP', xp: 860,  color: '#06b6d4' },
+].sort((a, b) => b.xp - a.xp))
+
+const activeLeaderboard = computed(() =>
+  lbTab.value === 'Network' ? networkLeaderboard.value : globalLeaderboard.value
+)
 </script>

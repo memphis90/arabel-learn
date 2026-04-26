@@ -138,11 +138,48 @@
             </div>
           </div>
 
-          <!-- Completion trophy -->
-          <div v-if="progress.pct === 100" style="margin-top:8px;text-align:center;padding:22px;border-radius:16px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2)">
-            <div style="font-size:2.2rem;margin-bottom:6px">🏆</div>
-            <div style="font-size:0.95rem;font-weight:700;color:#fbbf24;margin-bottom:3px">Corso completato!</div>
-            <div style="font-size:0.78rem;color:rgba(var(--rgb-text),0.38)">Hai completato tutte le lezioni di {{ course.name }}</div>
+          <!-- Certificate step -->
+          <div v-if="progress.total > 0" style="margin-top:20px;position:relative;padding-left:28px">
+            <!-- Connector line from last level -->
+            <div style="position:absolute;left:12px;top:0;height:20px;width:2px;border-radius:99px;background:rgba(var(--rgb-border),0.06)" />
+            <div style="display:flex;align-items:center;gap:16px">
+              <!-- Node -->
+              <div :style="{
+                width:'28px', height:'28px', borderRadius:'8px', flexShrink:0, zIndex:1,
+                display:'flex', alignItems:'center', justifyContent:'center',
+                background: progress.pct === 100 ? 'rgba(251,191,36,0.18)' : 'rgba(var(--rgb-border),0.05)',
+                border: `2.5px solid ${progress.pct === 100 ? 'rgba(251,191,36,0.8)' : 'rgba(var(--rgb-border),0.12)'}`,
+                boxShadow: progress.pct === 100 ? '0 2px 12px rgba(251,191,36,0.3)' : 'none',
+              }">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  :style="{ color: progress.pct === 100 ? '#fbbf24' : 'rgba(var(--rgb-text),0.2)' }">
+                  <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+                </svg>
+              </div>
+              <!-- Card -->
+              <div :style="{
+                flex:1, padding:'13px 16px', borderRadius:'12px',
+                background: progress.pct === 100 ? 'rgba(251,191,36,0.06)' : 'rgba(var(--rgb-border),0.02)',
+                border: `1px solid ${progress.pct === 100 ? 'rgba(251,191,36,0.22)' : 'rgba(var(--rgb-border),0.05)'}`,
+                opacity: progress.pct === 100 ? 1 : 0.4,
+              }">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                  <div>
+                    <div :style="{ fontSize:'0.84rem', fontWeight:600, color: progress.pct === 100 ? '#fbbf24' : 'var(--text-1)', marginBottom:'2px' }">Certificato di completamento</div>
+                    <div style="font-size:0.72rem;color:rgba(var(--rgb-text),0.35)">{{ progress.pct === 100 ? 'Disponibile — hai completato il corso!' : 'Completa tutte le lezioni per sbloccare' }}</div>
+                  </div>
+                  <button v-if="progress.pct === 100" @click="downloadCert"
+                    style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid rgba(251,191,36,0.35);background:rgba(251,191,36,0.1);color:#fbbf24;font-size:0.78rem;font-weight:600;cursor:pointer;flex-shrink:0;transition:background 0.2s"
+                    @mouseover="e => e.currentTarget.style.background='rgba(251,191,36,0.2)'"
+                    @mouseout="e => e.currentTarget.style.background='rgba(251,191,36,0.1)'">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Scarica PDF
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -159,11 +196,13 @@ import AppSidebar     from '@/components/AppSidebar.vue'
 import AppHeader      from '@/components/AppHeader.vue'
 import CourseIcon     from '@/components/CourseIcon.vue'
 import { useLearnStore } from '@/stores/learn'
+import { useAuthStore }  from '@/stores/auth'
 import { courses } from '@/data/learn'
 
 const route  = useRoute()
 const router = useRouter()
 const learn  = useLearnStore()
+const auth   = useAuthStore()
 
 const course   = computed(() => courses.find(c => c.id === route.params.id))
 const allItems = computed(() => course.value?.levels.flatMap(l => l.items.map(i => i.id)) || [])
@@ -200,6 +239,53 @@ const tierMap = {
 }
 function tierStyle(tier) { return tierMap[tier] || { bg:'transparent', border:'transparent', color:'transparent' } }
 function tierLabel(tier)  { return tierMap[tier]?.label || '' }
+
+function downloadCert() {
+  const c = course.value
+  const userName = auth.user?.name || 'Studente'
+  const date = new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
+  const html = `<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Certificato — ${c.name}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:#fff; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:40px; }
+  .cert { width:794px; min-height:560px; border:2px solid rgb(${c.colorRgb}); border-radius:20px; padding:60px 72px; position:relative; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.08); }
+  .band { position:absolute; top:0; left:0; right:0; height:8px; background:linear-gradient(90deg,rgb(${c.colorRgb}),rgba(${c.colorRgb},0.3)); }
+  .brand { font-size:13px; font-weight:700; letter-spacing:0.15em; color:rgba(${c.colorRgb},0.8); margin-bottom:40px; }
+  .label { font-size:12px; font-weight:600; letter-spacing:0.12em; color:#999; margin-bottom:12px; }
+  .name  { font-size:42px; font-weight:900; color:#111; letter-spacing:-0.02em; margin-bottom:32px; border-bottom:2px solid rgb(${c.colorRgb}); padding-bottom:24px; }
+  .course-label { font-size:12px; font-weight:600; letter-spacing:0.1em; color:#999; margin-bottom:8px; }
+  .course { font-size:26px; font-weight:700; color:#111; margin-bottom:40px; }
+  .footer { display:flex; justify-content:space-between; align-items:flex-end; margin-top:40px; }
+  .date { font-size:13px; color:#888; }
+  .badge { width:60px; height:60px; border-radius:50%; background:rgba(${c.colorRgb},0.12); border:2px solid rgba(${c.colorRgb},0.4); display:flex; align-items:center; justify-content:center; font-size:28px; }
+  @media print { body { padding:0; } .cert { box-shadow:none; border-radius:0; } }
+</style>
+</head>
+<body>
+<div class="cert">
+  <div class="band"></div>
+  <div class="brand">ARABEL LEARN</div>
+  <div class="label">CERTIFICATO DI COMPLETAMENTO</div>
+  <div class="name">${userName}</div>
+  <div class="course-label">HA COMPLETATO IL CORSO</div>
+  <div class="course">${c.name}</div>
+  <div class="footer">
+    <div class="date">Emesso il ${date}<br><span style="color:#bbb;font-size:11px">learn.arabel.dev</span></div>
+    <div class="badge">🏆</div>
+  </div>
+</div>
+<script>window.onload = () => { window.print(); }<\/script>
+</body>
+</html>`
+  const win = window.open('', '_blank')
+  win.document.write(html)
+  win.document.close()
+}
 
 function navigate(item) {
   if (itemStatus(item.id) === 'locked') return

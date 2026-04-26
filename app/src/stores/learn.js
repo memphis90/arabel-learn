@@ -68,5 +68,12 @@ export const useLearnStore = defineStore('learn', () => {
     return completed.value.includes(itemId)
   }
 
-  return { completed, followed, loading, xpToast, fetchProgress, completeItem, clearToast, isCompleted, isFollowed, followCourse }
+  async function resetProgress() {
+    completed.value = []
+    followed.value  = []
+    useApi().post('/learn/reset', {}).catch(() => {})
+    useAuthStore().updateStats({ xp: 0, level: 1, xpNextLevel: 200, streak: 0, badges: [] })
+  }
+
+  return { completed, followed, loading, xpToast, fetchProgress, completeItem, clearToast, isCompleted, isFollowed, followCourse, resetProgress }
 })

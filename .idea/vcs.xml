@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$USER_HOME$/PhpstormProjects/Arabel" vcs="Git" />
+    <mapping directory="$USER_HOME$/PhpstormProjects/Arabel/shared/vue-components" vcs="Git" />
   </component>
 </project>

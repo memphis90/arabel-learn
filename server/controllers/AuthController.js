@@ -14,8 +14,13 @@ const COOKIE   = (isDev) => ({
 })
 
 function issueSession(res, user) {
-  const payload = { id: user.id, email: user.email, plan: user.plan_id === 1 ? 'free' : 'pro' }
-  const token   = jwt.sign(payload, config.jwt.secret, { expiresIn: config.jwt.expiresIn })
+  const payload = {
+    id:   user.id,
+    email: user.email,
+    plan:  user.plan_id === 1 ? 'free' : 'pro',
+    role:  user.role_name || 'user',
+  }
+  const token = jwt.sign(payload, config.jwt.secret, { expiresIn: config.jwt.expiresIn })
   res.cookie('token', token, COOKIE(config.app.isDev))
   return payload
 }
@@ -57,6 +62,7 @@ const AuthController = {
         password_hash: hash,
         is_active:     true,
         source:        'learn',
+        role_id:       1,
       })
 
       await ensureLearnStats(user.id)
@@ -74,7 +80,7 @@ const AuthController = {
         return res.status(422).json({ success: false, message: 'Campi obbligatori mancanti' })
       }
 
-      const user = await User.query().where('email', email).first()
+      const user = await User.query().with('role').where('email', email).first()
       const INVALID = { success: false, message: 'Credenziali non valide' }
 
       if (!user || !user.is_active) return res.status(401).json(INVALID)
@@ -86,6 +92,7 @@ const AuthController = {
       await User.query().where('id', user.id).update({ last_login: new Date() })
       await ensureLearnStats(user.id)
 
+      user.role_name = user.role?.name || 'user'
       const payload = issueSession(res, user)
       res.json({ success: true, user: payload })
     } catch (err) {
@@ -95,8 +102,9 @@ const AuthController = {
 
   async googleCallback(req, res, next) {
     try {
-      const user = req.user
+      const user = await User.query().with('role').where('id', req.user.id).first()
       await ensureLearnStats(user.id)
+      user.role_name = user.role?.name || 'user'
       const payload = issueSession(res, user)
       res.redirect(`${config.google?.frontendUrl || 'http://localhost:5174'}`)
     } catch (err) {
@@ -111,7 +119,7 @@ const AuthController = {
 
   async me(req, res, next) {
     try {
-      const user = await User.query().where('id', req.user.id).first()
+      const user = await User.query().with('role').where('id', req.user.id).first()
       if (!user) return res.status(404).json({ success: false, message: 'Utente non trovato' })
 
       const stats = await UserLearnStats.query().where('user_id', user.id).first()
@@ -119,10 +127,13 @@ const AuthController = {
       res.json({
         success: true,
         user: {
-          id:    user.id,
-          email: user.email,
-          name:  user.name,
-          plan:  user.plan_id === 1 ? 'FREE' : 'PRO',
+          id:           user.id,
+          email:        user.email,
+          name:         user.name,
+          plan:         user.plan_id === 1 ? 'FREE' : 'PRO',
+          role:         user.role?.name || 'user',
+          linkedin_url: user.linkedin_url || null,
+          github_url:   user.github_url   || null,
         },
         stats: stats ? {
           xp:                stats.xp,
