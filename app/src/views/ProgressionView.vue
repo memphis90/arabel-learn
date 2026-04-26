@@ -11,11 +11,11 @@
           </button>
         </template>
       </AppHeader>
-      <div style="flex:1;overflow-y:auto;padding:28px 32px">
+      <div class="view-scroll" style="flex:1;overflow-y:auto;padding:28px 32px">
         <div style="max-width:1200px;margin:0 auto">
 
           <!-- Profile Header -->
-          <div style="margin-bottom:28px;padding:22px;border-radius:18px;background:rgba(var(--rgb-surface),0.7);border:1px solid rgba(var(--rgb-border),0.07);display:flex;align-items:center;gap:18px">
+          <div class="profile-header" style="margin-bottom:28px;padding:22px;border-radius:18px;background:rgba(var(--rgb-surface),0.7);border:1px solid rgba(var(--rgb-border),0.07);display:flex;align-items:center;gap:18px">
             <div style="width:64px;height:64px;border-radius:50%;background:#6366f1;border:2px solid rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff;flex-shrink:0">
               {{ initials }}
             </div>
@@ -46,7 +46,7 @@
           </div>
 
           <!-- Stats Row -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px">
+          <div class="stats-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px">
             <div style="padding:16px 20px;border-radius:14px;background:rgba(var(--rgb-surface),0.7);border:1px solid rgba(var(--rgb-border),0.06);display:flex;align-items:center;justify-content:space-between">
               <span style="font-size:0.8rem;color:rgba(var(--rgb-text),0.45)">Corsi completati</span>
               <span style="font-size:1rem;font-weight:700;color:#22c55e">{{ activeCourses.filter(c => courseProgress(c).pct === 100).length }}/{{ activeCourses.length }}</span>
@@ -572,3 +572,14 @@ const studyChartOptions = {
   },
 }
 </script>
+
+<style scoped>
+@media (max-width: 640px) {
+  .profile-header {
+    flex-wrap: wrap;
+  }
+  .stats-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>

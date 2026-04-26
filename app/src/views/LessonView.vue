@@ -4,11 +4,11 @@
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1">
       <AppHeader :breadcrumbs="[
-        { label: 'Corsi', onClick: () => $router.push({ name: 'home' }) },
+        { label: t('nav.courses'), onClick: () => $router.push({ name: 'home' }) },
         { label: course?.name || '', onClick: () => $router.push({ name: 'course', params: { id: courseId } }) },
         { label: lesson?.title || '' },
       ]" />
-      <div v-if="lesson && course" style="flex:1;overflow-y:auto;padding:24px 32px">
+      <div v-if="lesson && course" class="view-scroll" style="flex:1;overflow-y:auto;padding:24px 32px">
         <div style="max-width:760px;margin:0 auto">
 
           <!-- Header -->
@@ -46,7 +46,7 @@
               <!-- Exercise block -->
               <div v-else-if="block.type === 'exercise'" style="border-radius:14px;border:1px solid rgba(168,85,247,0.2);overflow:hidden">
                 <div style="padding:14px 18px;background:rgba(168,85,247,0.06)">
-                  <div style="font-size:0.7rem;font-weight:700;color:rgba(168,85,247,0.8);letter-spacing:0.06em;margin-bottom:8px">⚡ ESERCIZIO</div>
+                  <div style="font-size:0.7rem;font-weight:700;color:rgba(168,85,247,0.8);letter-spacing:0.06em;margin-bottom:8px">⚡ {{ t('lesson.exercise') }}</div>
                   <p style="margin:0 0 8px;font-size:0.875rem;line-height:1.6;color:rgba(var(--rgb-text),0.85)" v-html="renderMd(block.prompt)" />
                   <p v-if="block.hint" style="margin:0;font-size:0.78rem;color:rgba(var(--rgb-text),0.4);font-style:italic" v-html="'💡 ' + renderMd(block.hint)" />
                 </div>
@@ -55,7 +55,7 @@
                     @mouseover="e => e.currentTarget.style.background='rgba(168,85,247,0.06)'"
                     @mouseout="e => e.currentTarget.style.background='transparent'">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :style="{ transition:'transform 0.2s', transform: shownSolutions[i] ? 'rotate(90deg)' : 'none' }"><polyline points="9 18 15 12 9 6"/></svg>
-                    {{ shownSolutions[i] ? 'Nascondi soluzione' : 'Mostra soluzione' }}
+                    {{ shownSolutions[i] ? t('lesson.hide_solution') : t('lesson.show_solution') }}
                   </button>
                   <div v-if="shownSolutions[i]" style="padding:0 18px 16px">
                     <CodeBlock :code="block.solution" label="soluzione.js" lang="js" />
@@ -74,9 +74,9 @@
           <div style="display:flex;justify-content:center">
             <div v-if="done" style="display:flex;align-items:center;gap:10px;padding:12px 24px;border-radius:12px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2)">
               <span style="color:#22c55e;font-size:1rem">✓</span>
-              <span style="font-size:0.9rem;font-weight:600;color:#86efac">Lezione completata!</span>
+              <span style="font-size:0.9rem;font-weight:600;color:#86efac">{{ t('lesson.completed') }}</span>
               <button @click="$router.push({ name: 'course', params: { id: courseId } })" style="margin-left:8px;padding:6px 14px;border-radius:8px;border:1px solid rgba(34,197,94,0.3);background:transparent;color:#86efac;font-size:0.8rem;cursor:pointer">
-                Torna al corso ›
+                {{ t('lesson.back') }} ›
               </button>
             </div>
             <button v-else @click="complete" :style="{
@@ -87,7 +87,7 @@
             }"
             @mouseover="e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow=`0 8px 28px rgba(${course.colorRgb},0.4)` }"
             @mouseout="e => { e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow=`0 4px 20px rgba(${course.colorRgb},0.3)` }">
-              ✓ Segna come completata · +{{ lesson.xp }} XP
+              {{ t('lesson.mark_done', lesson.xp) }}
             </button>
           </div>
 
@@ -97,7 +97,7 @@
               style="display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;border:1px solid rgba(var(--rgb-border),0.07);background:transparent;color:rgba(var(--rgb-text),0.5);font-size:0.82rem;cursor:pointer;transition:all 0.2s"
               @mouseover="e => { e.currentTarget.style.background='rgba(var(--rgb-border),0.04)'; e.currentTarget.style.color='var(--text-1)' }"
               @mouseout="e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='rgba(var(--rgb-text),0.5)' }">
-              ‹ {{ prev ? prev.title : 'Torna al corso' }}
+              ‹ {{ prev ? prev.title : t('lesson.back') }}
             </button>
             <button v-if="next" @click="navigateItem(next)"
               :style="{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 16px', borderRadius: '10px', border: `1px solid rgba(${course.colorRgb},0.25)`, background: `rgba(${course.colorRgb},0.07)`, color: `rgb(${course.colorRgb})`, fontSize: '0.82rem', cursor: 'pointer', transition: 'all 0.2s' }"
@@ -122,11 +122,13 @@ import AppHeader      from '@/components/AppHeader.vue'
 import CodeBlock      from '@/components/CodeBlock.vue'
 import TryItEditor    from '@/components/TryItEditor.vue'
 import { useLearnStore } from '@/stores/learn'
+import { useLocale }     from '@/composables/useLocale'
 import { courses, lessons, quizzes as content, getAdjacentItems } from '@/data/learn'
 
 const route  = useRoute()
 const router = useRouter()
 const learn  = useLearnStore()
+const { t }  = useLocale()
 
 const courseId = computed(() => route.query.courseId || route.params.id?.split('-').slice(0, 2).join('-'))
 const lesson   = computed(() => lessons[route.params.id] ?? content[route.params.id])

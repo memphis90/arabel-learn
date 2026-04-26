@@ -3,7 +3,7 @@
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
       <AppHeader :breadcrumbs="[{ label: 'Dashboard' }]" />
-      <div style="flex:1;overflow-y:auto;padding:28px 32px">
+      <div class="view-scroll" style="flex:1;overflow-y:auto;padding:28px 32px">
         <div style="max-width:900px;margin:0 auto">
 
           <!-- Hero -->

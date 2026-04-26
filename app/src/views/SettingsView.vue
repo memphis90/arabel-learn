@@ -3,7 +3,7 @@
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
       <AppHeader :breadcrumbs="[{ label: 'Impostazioni' }]" />
-      <div style="flex:1;overflow-y:auto;padding:32px 40px">
+      <div class="view-scroll" style="flex:1;overflow-y:auto;padding:32px 40px">
         <div class="settings-layout">
 
           <!-- Vertical Tab Nav -->
@@ -532,7 +532,7 @@ async function confirmDelete() {
 .settings-lang-pill--disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* ── LinkedIn ─────────────────────────────────────────────── */
-.settings-linkedin-wrap {
+.settings-social-wrap {
   display: flex;
   align-items: center;
   width: 100%;
@@ -542,9 +542,9 @@ async function confirmDelete() {
   background: rgba(var(--rgb-border), 0.04);
   transition: border-color 0.15s;
 }
-.settings-linkedin-wrap:focus-within { border-color: rgba(99, 102, 241, 0.5); }
+.settings-social-wrap:focus-within { border-color: rgba(99, 102, 241, 0.5); }
 
-.settings-linkedin-prefix {
+.settings-social-prefix {
   padding: 9px 10px 9px 12px;
   font-size: 0.8rem;
   color: rgba(var(--rgb-text), 0.3);
@@ -553,7 +553,7 @@ async function confirmDelete() {
   border-right: 1px solid rgba(var(--rgb-border), 0.08);
 }
 
-.settings-linkedin-input {
+.settings-social-input {
   flex: 1;
   padding: 9px 12px;
   border: none;
@@ -562,7 +562,7 @@ async function confirmDelete() {
   font-size: 0.875rem;
   outline: none;
 }
-.settings-linkedin-input::placeholder { color: rgba(var(--rgb-text), 0.25); }
+.settings-social-input::placeholder { color: rgba(var(--rgb-text), 0.25); }
 
 /* ── Password form ────────────────────────────────────────── */
 .settings-pw-form { display: flex; flex-direction: column; gap: 14px; padding: 8px 0 16px; }
@@ -697,4 +697,38 @@ async function confirmDelete() {
 }
 .settings-delete-confirm__confirm:hover:not(:disabled) { background: #dc2626; }
 .settings-delete-confirm__confirm:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── Mobile ───────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .settings-layout {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .settings-nav {
+    flex-direction: row;
+    width: 100%;
+    overflow-x: auto;
+    padding: 0;
+    gap: 4px;
+    scrollbar-width: none;
+  }
+  .settings-nav::-webkit-scrollbar { display: none; }
+
+  .settings-nav__item {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+  }
+  .settings-nav__icon { display: none; }
+
+  .settings-row {
+    padding: 14px 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .settings-section-label { padding: 14px 18px 0; }
+  .settings-divider { margin: 0 18px; }
+  .settings-delete-confirm { padding: 0 18px 16px; }
+}
 </style>

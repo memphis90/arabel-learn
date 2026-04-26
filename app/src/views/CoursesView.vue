@@ -3,7 +3,7 @@
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
       <AppHeader :breadcrumbs="[{ label: t('nav.courses') }]" />
-      <div style="flex:1;overflow-y:auto;padding:24px 32px">
+      <div class="view-scroll" style="flex:1;overflow-y:auto;padding:24px 32px">
         <div style="max-width:1080px;margin:0 auto">
 
           <!-- Filters -->

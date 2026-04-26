@@ -67,6 +67,25 @@
     </div>
   </aside>
 
+  <!-- Mobile bottom nav -->
+  <nav class="mobile-bottom-nav">
+    <button
+      v-for="item in navItems"
+      :key="item.name"
+      class="mobile-nav-btn"
+      :class="{ 'mobile-nav-btn--active': isActive(item.name) }"
+      :title="item.label"
+      :aria-label="item.label"
+      @click="router.push({ name: item.name })"
+    >
+      <span class="mobile-nav-icon" v-html="item.icon" />
+    </button>
+    <button class="mobile-nav-btn" :class="{ 'mobile-nav-btn--active': $route.name === 'impostazioni' }"
+      title="Impostazioni" aria-label="Impostazioni" @click="router.push({ name: 'impostazioni' })">
+      <span class="mobile-nav-icon" v-html="icons.settings" />
+    </button>
+  </nav>
+
   <!-- Dropdown teleported to body — never clipped by sidebar -->
   <Teleport to="body">
     <div v-if="menuOpen" @click="menuOpen = false" style="position:fixed;inset:0;z-index:199" />
@@ -210,6 +229,51 @@ const SidebarBtn = defineComponent({
 </script>
 
 <style scoped>
+/* ── Mobile bottom nav ─────────────────────────────────────── */
+.mobile-bottom-nav { display: none; }
+
+@media (max-width: 768px) {
+  aside { display: none !important; }
+
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--bg-sidebar);
+    border-top: 1px solid rgba(var(--rgb-border), 0.07);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 100;
+    align-items: stretch;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .mobile-nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: rgba(var(--rgb-text), 0.4);
+    transition: color 0.2s, background 0.15s;
+    padding: 4px 0;
+    font-family: inherit;
+  }
+  .mobile-nav-btn:active { background: rgba(var(--rgb-border), 0.04); }
+  .mobile-nav-btn--active { color: #818cf8; }
+
+  .mobile-nav-icon { display: flex; align-items: center; justify-content: center; }
+  .mobile-nav-icon :deep(svg) { width: 22px; height: 22px; }
+}
+
+/* ── Desktop dropdown ──────────────────────────────────────── */
 .menu-item {
   display: flex; align-items: center; gap: 10px;
   width: 100%; padding: 11px 16px;

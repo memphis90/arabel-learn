@@ -4,11 +4,11 @@
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1">
       <AppHeader :breadcrumbs="[
-        { label: 'Corsi', onClick: () => $router.push({ name: 'courses' }) },
+        { label: t('nav.courses'), onClick: () => $router.push({ name: 'courses' }) },
         { label: course?.name || '' },
       ]" />
 
-      <div v-if="course" style="flex:1;overflow-y:auto;padding:24px 32px">
+      <div v-if="course" class="view-scroll" style="flex:1;overflow-y:auto;padding:24px 32px">
         <div style="max-width:680px;margin:0 auto">
 
           <!-- Course header -->
@@ -55,7 +55,7 @@
               <span v-if="levelDone(level)" :style="{
                 fontSize:'0.65rem', padding:'2px 8px', borderRadius:'99px',
                 background:`rgba(${course.colorRgb},0.1)`, border:`1px solid rgba(${course.colorRgb},0.25)`, color:`rgb(${course.colorRgb})`,
-              }">Completato</span>
+              }">{{ t('course.completed_badge') }}</span>
             </div>
 
             <!-- Items -->
@@ -165,8 +165,8 @@
               }">
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
                   <div>
-                    <div :style="{ fontSize:'0.84rem', fontWeight:600, color: progress.pct === 100 ? '#fbbf24' : 'var(--text-1)', marginBottom:'2px' }">Certificato di completamento</div>
-                    <div style="font-size:0.72rem;color:rgba(var(--rgb-text),0.35)">{{ progress.pct === 100 ? 'Disponibile — hai completato il corso!' : 'Completa tutte le lezioni per sbloccare' }}</div>
+                    <div :style="{ fontSize:'0.84rem', fontWeight:600, color: progress.pct === 100 ? '#fbbf24' : 'var(--text-1)', marginBottom:'2px' }">{{ t('course.cert_title') }}</div>
+                    <div style="font-size:0.72rem;color:rgba(var(--rgb-text),0.35)">{{ progress.pct === 100 ? t('course.cert_available') : t('course.cert_locked') }}</div>
                   </div>
                   <button v-if="progress.pct === 100" @click="downloadCert"
                     style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid rgba(251,191,36,0.35);background:rgba(251,191,36,0.1);color:#fbbf24;font-size:0.78rem;font-weight:600;cursor:pointer;flex-shrink:0;transition:background 0.2s"
@@ -175,7 +175,7 @@
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
-                    Scarica PDF
+                    {{ t('course.cert_download') }}
                   </button>
                 </div>
               </div>
@@ -197,12 +197,14 @@ import AppHeader      from '@/components/AppHeader.vue'
 import CourseIcon     from '@/components/CourseIcon.vue'
 import { useLearnStore } from '@/stores/learn'
 import { useAuthStore }  from '@/stores/auth'
+import { useLocale }     from '@/composables/useLocale'
 import { courses } from '@/data/learn'
 
 const route  = useRoute()
 const router = useRouter()
 const learn  = useLearnStore()
 const auth   = useAuthStore()
+const { t }  = useLocale()
 
 const course   = computed(() => courses.find(c => c.id === route.params.id))
 const allItems = computed(() => course.value?.levels.flatMap(l => l.items.map(i => i.id)) || [])
@@ -232,13 +234,18 @@ function levelProgress(level) {
   return Math.round((done / level.items.length) * 100)
 }
 
-const tierMap = {
-  beginner:     { label: 'Principiante', bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.25)',  color: '#4ade80' },
-  intermediate: { label: 'Intermedio',   bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', color: '#fbbf24' },
-  advanced:     { label: 'Avanzato',     bg: 'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.25)',  color: '#f87171' },
+const TIER_STYLE = {
+  beginner:     { bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.25)',  color: '#4ade80' },
+  intermediate: { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', color: '#fbbf24' },
+  advanced:     { bg: 'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.25)',  color: '#f87171' },
 }
-function tierStyle(tier) { return tierMap[tier] || { bg:'transparent', border:'transparent', color:'transparent' } }
-function tierLabel(tier)  { return tierMap[tier]?.label || '' }
+function tierStyle(tier) { return TIER_STYLE[tier] || { bg:'transparent', border:'transparent', color:'transparent' } }
+function tierLabel(tier)  {
+  if (tier === 'beginner')     return t('course.tier_beginner')
+  if (tier === 'intermediate') return t('course.tier_intermediate')
+  if (tier === 'advanced')     return t('course.tier_advanced')
+  return ''
+}
 
 function downloadCert() {
   const c = course.value

@@ -4,19 +4,19 @@
     <AppSidebar />
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1">
       <AppHeader :breadcrumbs="[
-        { label: 'Corsi', onClick: () => $router.push({ name: 'home' }) },
+        { label: t('nav.courses'), onClick: () => $router.push({ name: 'home' }) },
         { label: course?.name || '', onClick: () => $router.push({ name: 'course', params: { id: courseId } }) },
         { label: quiz?.title || '' },
       ]" />
-      <div style="flex:1;overflow-y:auto;padding:28px 32px">
+      <div class="view-scroll" style="flex:1;overflow-y:auto;padding:28px 32px">
         <div style="max-width:640px;margin:0 auto">
 
           <!-- Already done -->
           <div v-if="alreadyDone && !finished" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:16px;text-align:center">
             <div style="font-size:2.5rem">✓</div>
-            <h3 style="margin:0;color:var(--text-1)">Quiz già completato!</h3>
-            <p style="margin:0;color:rgba(var(--rgb-text),0.45);font-size:0.875rem">Hai già guadagnato +{{ quiz.xp }} XP per questo quiz.</p>
-            <button @click="$router.push({ name: 'course', params: { id: courseId } })" style="padding:10px 22px;border-radius:10px;border:1px solid rgba(var(--rgb-border),0.1);background:transparent;color:rgba(var(--rgb-text),0.7);cursor:pointer;font-size:0.875rem">← Torna al corso</button>
+            <h3 style="margin:0;color:var(--text-1)">{{ t('quiz.already_done_title') }}</h3>
+            <p style="margin:0;color:rgba(var(--rgb-text),0.45);font-size:0.875rem">{{ t('quiz.already_done_desc', quiz.xp) }}</p>
+            <button @click="$router.push({ name: 'course', params: { id: courseId } })" style="padding:10px 22px;border-radius:10px;border:1px solid rgba(var(--rgb-border),0.1);background:transparent;color:rgba(var(--rgb-text),0.7);cursor:pointer;font-size:0.875rem">{{ t('quiz.back') }}</button>
           </div>
 
           <!-- Results -->
@@ -24,13 +24,13 @@
             <div style="font-size:3rem">{{ resultEmoji }}</div>
             <div>
               <h2 style="margin:0 0 6px;font-size:1.8rem;font-weight:700;color:var(--text-1)">{{ resultPct }}%</h2>
-              <p style="margin:0;color:rgba(var(--rgb-text),0.5);font-size:0.9rem">{{ resultScore }} / {{ quiz.questions.length }} risposte corrette</p>
+              <p style="margin:0;color:rgba(var(--rgb-text),0.5);font-size:0.9rem">{{ t('quiz.correct_of', resultScore, quiz.questions.length) }}</p>
             </div>
             <div :style="{ padding: '10px 20px', borderRadius: '12px', background: `rgba(${course?.colorRgb},0.1)`, border: `1px solid rgba(${course?.colorRgb},0.25)`, fontSize: '0.95rem', fontWeight: 700, color: `rgb(${course?.colorRgb})` }">
-              +{{ quiz.xp }} XP guadagnati
+              {{ t('quiz.xp_earned', quiz.xp) }}
             </div>
-            <div v-if="resultScore === quiz.questions.length" style="font-size:0.82rem;padding:8px 16px;border-radius:99px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);color:#c084fc">🏅 Badge sbloccato: Quiz Ace!</div>
-            <button @click="$router.push({ name: 'course', params: { id: courseId } })" style="padding:11px 28px;border-radius:12px;border:none;background:#6366f1;color:#fff;font-size:0.9rem;font-weight:600;cursor:pointer">Torna al corso ›</button>
+            <div v-if="resultScore === quiz.questions.length" style="font-size:0.82rem;padding:8px 16px;border-radius:99px;background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);color:#c084fc">{{ t('quiz.badge_quiz_ace') }}</div>
+            <button @click="$router.push({ name: 'course', params: { id: courseId } })" style="padding:11px 28px;border-radius:12px;border:none;background:#6366f1;color:#fff;font-size:0.9rem;font-weight:600;cursor:pointer">{{ t('quiz.back_btn') }}</button>
           </div>
 
           <!-- Quiz -->
@@ -45,7 +45,7 @@
 
             <!-- Question -->
             <div style="margin-bottom:24px">
-              <div :style="{ fontSize: '0.72rem', color: `rgba(${course?.colorRgb},0.8)`, fontWeight: 600, letterSpacing: '0.05em', marginBottom: '8px' }">DOMANDA {{ qIdx + 1 }}</div>
+              <div :style="{ fontSize: '0.72rem', color: `rgba(${course?.colorRgb},0.8)`, fontWeight: 600, letterSpacing: '0.05em', marginBottom: '8px' }">{{ t('quiz.question', qIdx + 1) }}</div>
               <h3 style="margin:0;font-size:1.1rem;font-weight:600;color:var(--text-1);line-height:1.5">{{ q.text }}</h3>
             </div>
 

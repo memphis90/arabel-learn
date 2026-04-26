@@ -5,7 +5,7 @@
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1">
       <AppHeader :breadcrumbs="[{ label: 'Network' }]" />
 
-      <div style="flex:1;overflow-y:auto;padding:24px 32px">
+      <div class="view-scroll" style="flex:1;overflow-y:auto;padding:24px 32px">
         <div style="max-width:1100px;margin:0 auto">
 
           <!-- Mockup banner -->
