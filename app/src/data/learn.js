@@ -171,8 +171,27 @@ export const courses = [
   },
   {
     id: 'go', name: 'Go', tagline: 'Velocità e semplicità per i sistemi moderni',
-    color: '#06b6d4', colorRgb: '6,182,212', category: 'Backend', comingSoon: true,
-    levels: [],
+    color: '#00add8', colorRgb: '0,173,216', category: 'Backend',
+    levels: [
+      { name: 'Principiante', tier: 'beginner', items: [
+        { id: 'go-1-1', type: 'lesson', title: "Cos'è Go?", xp: 10 },
+        { id: 'go-1-2', type: 'lesson', title: 'Variabili, tipi e funzioni', xp: 10 },
+        { id: 'go-1-3', type: 'lesson', title: 'Array, slice e map', xp: 10 },
+        { id: 'go-1-q', type: 'quiz',   title: 'Quiz: Go Principiante', xp: 30 },
+      ]},
+      { name: 'Intermedio', tier: 'intermediate', items: [
+        { id: 'go-2-1', type: 'lesson', title: 'Struct e interfacce', xp: 15 },
+        { id: 'go-2-2', type: 'lesson', title: 'Goroutine e channel', xp: 15 },
+        { id: 'go-2-3', type: 'lesson', title: 'Packages e moduli', xp: 15 },
+        { id: 'go-2-q', type: 'quiz',   title: 'Quiz: Go Intermedio', xp: 40 },
+      ]},
+      { name: 'Avanzato', tier: 'advanced', items: [
+        { id: 'go-3-1', type: 'lesson', title: 'Error handling e defer', xp: 20 },
+        { id: 'go-3-2', type: 'lesson', title: 'HTTP server con net/http', xp: 20 },
+        { id: 'go-3-3', type: 'lesson', title: 'Testing e benchmarking', xp: 20 },
+        { id: 'go-3-q', type: 'quiz',   title: 'Quiz: Go Avanzato', xp: 50 },
+      ]},
+    ],
   },
   {
     id: 'java', name: 'Java', tagline: 'Robusto, portabile, enterprise-ready',
@@ -1497,6 +1516,204 @@ export const quizzes = {
       { text: 'TypeScript è un superset di quale linguaggio?', options: ['Java', 'Python', 'JavaScript', 'C#'], correct: 2, explanation: 'TypeScript è un superset tipizzato di JavaScript.' },
       { text: 'Quale keyword definisce un tipo personalizzato?', options: ['type', 'interface', 'typedef', "Sia 'type' che 'interface'"], correct: 3, explanation: 'Sia type che interface possono definire tipi in TypeScript.' },
       { text: "Cosa distingue 'unknown' da 'any'?", options: ['Nulla', "'unknown' richiede type-checking prima dell'uso", "'any' è più sicuro", "'unknown' non esiste"], correct: 1, explanation: "unknown è la versione type-safe di any." },
+    ],
+  },
+
+  // ── Go ────────────────────────────────────────────────────────────────────
+  'go-1-1': {
+    title: "Cos'è Go?", xp: 10,
+    blocks: [
+      { type: 'text', md: '**Go** (o Golang) è un linguaggio compilato, staticamente tipizzato, creato da Google nel 2009. È progettato per la semplicità, le performance e la concorrenza nativa — ideale per API, microservizi e strumenti CLI.' },
+      { type: 'keypoints', title: 'Caratteristiche chiave', points: [
+        'Compilato in un singolo binario — nessuna dipendenza a runtime',
+        'Concorrenza nativa con goroutine e channel',
+        'Garbage collector senza pause significative',
+        'Standard library potente: HTTP, JSON, test, tutto incluso',
+        'Sintassi minimalista — si impara in pochi giorni',
+      ]},
+      { type: 'code', label: 'main.go', lang: 'go', code: `package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello, Go!")\n}` },
+      { type: 'text', md: 'Ogni programma Go appartiene a un **package**. Il package `main` con la funzione `main()` è il punto di ingresso dell\'eseguibile. Si compila con `go build` e si esegue con `go run`.' },
+    ],
+    tryIt: {
+      desc: 'Modifica il messaggio stampato e aggiungi una seconda riga:',
+      code: `package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello, Go!")\n\t// Aggiungi un'altra riga qui\n}`,
+      output: `Hello, Go!`,
+    },
+  },
+  'go-1-2': {
+    title: 'Variabili, tipi e funzioni', xp: 10,
+    blocks: [
+      { type: 'text', md: 'Go usa la type inference con `:=` per la dichiarazione breve di variabili. I tipi base sono `int`, `float64`, `string`, `bool`. Le **funzioni** possono restituire valori multipli — usato spesso per restituire anche un errore.' },
+      { type: 'code', label: 'variabili.go', lang: 'go', code: `package main\n\nimport "fmt"\n\nfunc somma(a, b int) int {\n\treturn a + b\n}\n\nfunc dividi(a, b float64) (float64, error) {\n\tif b == 0 {\n\t\treturn 0, fmt.Errorf("divisione per zero")\n\t}\n\treturn a / b, nil\n}\n\nfunc main() {\n\t// Dichiarazione breve\n\tnome := "Go"\n\tversione := 1.21\n\tattivo := true\n\n\t// Dichiarazione esplicita\n\tvar contatore int = 0\n\n\tfmt.Printf("Linguaggio: %s v%.2f, attivo: %v\\n", nome, versione, attivo)\n\tfmt.Println("Contatore:", contatore)\n\tfmt.Println("Somma:", somma(3, 4))\n\n\trisultato, err := dividi(10, 3)\n\tif err != nil {\n\t\tfmt.Println("Errore:", err)\n\t} else {\n\t\tfmt.Printf("Risultato: %.2f\\n", risultato)\n\t}\n}` },
+      { type: 'keypoints', title: 'Valori multipli di ritorno', points: [
+        'Go permette return multipli: `func f() (int, error)`',
+        'Convenzione: ultimo valore è `error`, `nil` se tutto OK',
+        '`_` scarta un valore di ritorno: `risultato, _ := f()`',
+        '`fmt.Errorf()` crea un errore formattato',
+      ]},
+    ],
+    tryIt: {
+      desc: 'Scrivi una funzione saluta(nome string) string che restituisce "Ciao, <nome>!":',
+      code: `package main\n\nimport "fmt"\n\nfunc saluta(nome string) string {\n\t// completa qui\n\treturn ""\n}\n\nfunc main() {\n\tfmt.Println(saluta("Alice"))\n}`,
+      output: `Ciao, Alice!`,
+    },
+  },
+  'go-1-3': {
+    title: 'Array, slice e map', xp: 10,
+    blocks: [
+      { type: 'text', md: 'Gli **array** hanno dimensione fissa. Le **slice** sono array dinamici — la struttura dati più usata in Go. Le **map** sono dizionari chiave-valore, simili agli oggetti JS o dict Python.' },
+      { type: 'code', label: 'collezioni.go', lang: 'go', code: `package main\n\nimport "fmt"\n\nfunc main() {\n\t// Array — dimensione fissa\n\tcolori := [3]string{"rosso", "verde", "blu"}\n\tfmt.Println(colori[0]) // rosso\n\n\t// Slice — dimensione dinamica\n\tnumeri := []int{10, 20, 30}\n\tnumeri = append(numeri, 40, 50)\n\tfmt.Println(numeri)       // [10 20 30 40 50]\n\tfmt.Println(numeri[1:3])  // [20 30]\n\n\t// Map — chiave:valore\n\tpunteggi := map[string]int{\n\t\t"Alice": 95,\n\t\t"Bob":   87,\n\t}\n\tpunteggi["Carlo"] = 91\n\n\tfor nome, punteggio := range punteggi {\n\t\tfmt.Printf("%s: %d\\n", nome, punteggio)\n\t}\n\n\t// Verifica esistenza chiave\n\tvalore, ok := punteggi["Alice"]\n\tfmt.Println(valore, ok) // 95 true\n}` },
+      { type: 'keypoints', title: 'Slice vs Array', points: [
+        'Slice: `[]int{1,2,3}` — lunghezza variabile, usa `append()`',
+        'Array: `[3]int{1,2,3}` — lunghezza fissa nel tipo',
+        'Slicing: `s[1:3]` restituisce elementi da indice 1 a 2',
+        'Map: controlla sempre con `val, ok := m[key]` prima di usare',
+      ]},
+    ],
+    tryIt: {
+      desc: 'Crea una slice di 3 nomi e stampali con range:',
+      code: `package main\n\nimport "fmt"\n\nfunc main() {\n\tnomi := []string{"Alice", "Bob", "Carlo"}\n\tfor _, nome := range nomi {\n\t\tfmt.Println(nome)\n\t}\n}`,
+      output: `Alice\nBob\nCarlo`,
+    },
+  },
+  'go-2-1': {
+    title: 'Struct e interfacce', xp: 15,
+    blocks: [
+      { type: 'text', md: 'Go non ha classi. Usa **struct** per raggruppare dati e **metodi** su struct per il comportamento. Le **interfacce** definiscono un contratto — qualsiasi tipo che implementa i metodi soddisfa l\'interfaccia, senza dichiarazione esplicita.' },
+      { type: 'code', label: 'struct.go', lang: 'go', code: `package main\n\nimport (\n\t"fmt"\n\t"math"\n)\n\n// Interfaccia\ntype Forma interface {\n\tArea() float64\n\tPerimetro() float64\n}\n\n// Struct Rettangolo\ntype Rettangolo struct {\n\tLarghezza, Altezza float64\n}\n\nfunc (r Rettangolo) Area() float64      { return r.Larghezza * r.Altezza }\nfunc (r Rettangolo) Perimetro() float64 { return 2 * (r.Larghezza + r.Altezza) }\n\n// Struct Cerchio\ntype Cerchio struct {\n\tRaggio float64\n}\n\nfunc (c Cerchio) Area() float64      { return math.Pi * c.Raggio * c.Raggio }\nfunc (c Cerchio) Perimetro() float64 { return 2 * math.Pi * c.Raggio }\n\nfunc stampaForma(f Forma) {\n\tfmt.Printf("Area: %.2f, Perimetro: %.2f\\n", f.Area(), f.Perimetro())\n}\n\nfunc main() {\n\tr := Rettangolo{Larghezza: 5, Altezza: 3}\n\tc := Cerchio{Raggio: 4}\n\n\tstampaForma(r)\n\tstampaForma(c)\n}` },
+      { type: 'keypoints', title: 'Interfacce implicite', points: [
+        'Nessun `implements` — il tipo soddisfa l\'interfaccia automaticamente',
+        'Metodi su struct: `func (r Rettangolo) Area() float64`',
+        'Pointer receiver: `func (r *Rettangolo) Scala(f float64)` — modifica la struct',
+        'Value receiver: copia — pointer receiver: riferimento originale',
+      ]},
+    ],
+    tryIt: {
+      desc: 'Aggiungi un campo Nome alla struct Rettangolo e stampalo nel metodo:',
+      code: `package main\n\nimport "fmt"\n\ntype Rettangolo struct {\n\tNome     string\n\tLarghezza, Altezza float64\n}\n\nfunc (r Rettangolo) Area() float64 {\n\treturn r.Larghezza * r.Altezza\n}\n\nfunc main() {\n\tr := Rettangolo{Nome: "Sala", Larghezza: 5, Altezza: 3}\n\tfmt.Printf("%s: area %.1f\\n", r.Nome, r.Area())\n}`,
+      output: `Sala: area 15.0`,
+    },
+  },
+  'go-2-2': {
+    title: 'Goroutine e channel', xp: 15,
+    blocks: [
+      { type: 'text', md: 'Le **goroutine** sono funzioni eseguite in concorrenza con keyword `go`. Costano pochi KB di memoria — un programma può averne milioni. I **channel** sono il meccanismo per comunicare tra goroutine in modo sicuro.' },
+      { type: 'code', label: 'concorrenza.go', lang: 'go', code: `package main\n\nimport (\n\t"fmt"\n\t"sync"\n)\n\n// Channel: pipeline produttore-consumatore\nfunc produci(ch chan<- int, n int) {\n\tfor i := 0; i < n; i++ {\n\t\tch <- i // invia nel channel\n\t}\n\tclose(ch)\n}\n\n// WaitGroup: attendi più goroutine\nfunc eseguiTask(id int, wg *sync.WaitGroup) {\n\tdefer wg.Done()\n\tfmt.Printf("Task %d completato\\n", id)\n}\n\nfunc main() {\n\t// Channel buffered\n\tch := make(chan int, 5)\n\tgo produci(ch, 5)\n\tfor v := range ch {\n\t\tfmt.Println("Ricevuto:", v)\n\t}\n\n\t// WaitGroup\n\tvar wg sync.WaitGroup\n\tfor i := 1; i <= 3; i++ {\n\t\twg.Add(1)\n\t\tgo eseguiTask(i, &wg)\n\t}\n\twg.Wait()\n\tfmt.Println("Tutte le task complete")\n}` },
+      { type: 'keypoints', title: 'Goroutine e channel', points: [
+        '`go f()` avvia una goroutine — non blocca il chiamante',
+        '`make(chan int)` crea un channel unbuffered — sincronizzazione implicita',
+        '`make(chan int, 10)` crea un channel buffered di capacità 10',
+        '`sync.WaitGroup` attende che un gruppo di goroutine finisca',
+        'Regola Go: non comunicare condividendo memoria, condividi comunicando',
+      ]},
+    ],
+    tryIt: {
+      desc: 'Avvia 3 goroutine che stampano il loro indice usando un WaitGroup:',
+      code: `package main\n\nimport (\n\t"fmt"\n\t"sync"\n)\n\nfunc main() {\n\tvar wg sync.WaitGroup\n\tfor i := 1; i <= 3; i++ {\n\t\twg.Add(1)\n\t\tgo func(id int) {\n\t\t\tdefer wg.Done()\n\t\t\tfmt.Println("Goroutine", id)\n\t\t}(i)\n\t}\n\twg.Wait()\n}`,
+      output: `Goroutine 1\nGoroutine 2\nGoroutine 3`,
+    },
+  },
+  'go-2-3': {
+    title: 'Packages e moduli', xp: 15,
+    blocks: [
+      { type: 'text', md: 'Go organizza il codice in **package** (directory = package). I **moduli** (introdotti con `go mod`) gestiscono le dipendenze. Il file `go.mod` definisce il nome del modulo e le dipendenze — nessun `node_modules` globale.' },
+      { type: 'code', label: 'go.mod', lang: 'go', code: `module github.com/utente/mioapp\n\ngo 1.21\n\nrequire (\n\tgithub.com/gin-gonic/gin v1.9.1\n\tgithub.com/jmoiron/sqlx v1.3.5\n)` },
+      { type: 'code', label: 'utils/math.go', lang: 'go', code: `// Package utils — file nella cartella utils/\npackage utils\n\n// Funzioni esportate iniziano con maiuscola\nfunc Somma(a, b int) int {\n\treturn a + b\n}\n\n// Funzioni non esportate iniziano con minuscola\nfunc interno() string {\n\treturn "privato"\n}` },
+      { type: 'code', label: 'main.go', lang: 'go', code: `package main\n\nimport (\n\t"fmt"\n\t"github.com/utente/mioapp/utils"\n)\n\nfunc main() {\n\tfmt.Println(utils.Somma(3, 4)) // 7\n}` },
+      { type: 'keypoints', title: 'Convenzioni Go', points: [
+        'Lettera maiuscola = esportato (pubblico), minuscola = non esportato',
+        '`go mod init <nome>` crea go.mod',
+        '`go get <pkg>` aggiunge una dipendenza',
+        '`go mod tidy` rimuove dipendenze non usate',
+      ]},
+    ],
+    tryIt: {
+      desc: 'Crea un package greet con una funzione Ciao(nome string) string:',
+      code: `// greet/greet.go\npackage greet\n\nfunc Ciao(nome string) string {\n\treturn "Ciao, " + nome + "!"\n}\n\n// main.go\npackage main\n\nimport (\n\t"fmt"\n\t"mioapp/greet"\n)\n\nfunc main() {\n\tfmt.Println(greet.Ciao("Alice"))\n}`,
+      output: `Ciao, Alice!`,
+    },
+  },
+  'go-3-1': {
+    title: 'Error handling e defer', xp: 20,
+    blocks: [
+      { type: 'text', md: 'In Go gli errori sono valori — non eccezioni. Si restituisce `error` come ultimo valore e si controlla con `if err != nil`. **`defer`** esegue una funzione al termine della funzione corrente — perfetto per cleanup di risorse.' },
+      { type: 'code', label: 'errors.go', lang: 'go', code: `package main\n\nimport (\n\t"errors"\n\t"fmt"\n\t"os"\n)\n\n// Tipo di errore custom\ntype ErrNotFound struct {\n\tID int\n}\n\nfunc (e *ErrNotFound) Error() string {\n\treturn fmt.Sprintf("elemento con id %d non trovato", e.ID)\n}\n\nfunc cercaUtente(id int) (string, error) {\n\tutenti := map[int]string{1: "Alice", 2: "Bob"}\n\tnome, ok := utenti[id]\n\tif !ok {\n\t\treturn "", &ErrNotFound{ID: id}\n\t}\n\treturn nome, nil\n}\n\nfunc leggiFile(path string) error {\n\tf, err := os.Open(path)\n\tif err != nil {\n\t\treturn fmt.Errorf("leggiFile: %w", err) // wrap dell'errore\n\t}\n\tdefer f.Close() // eseguito quando leggiFile ritorna\n\n\tfmt.Println("File aperto:", path)\n\treturn nil\n}\n\nfunc main() {\n\tnome, err := cercaUtente(1)\n\tif err != nil {\n\t\tfmt.Println("Errore:", err)\n\t} else {\n\t\tfmt.Println("Trovato:", nome)\n\t}\n\n\t_, err = cercaUtente(99)\n\tvar notFound *ErrNotFound\n\tif errors.As(err, &notFound) {\n\t\tfmt.Println("ID mancante:", notFound.ID)\n\t}\n}` },
+      { type: 'keypoints', title: 'Errori in Go', points: [
+        '`errors.New("msg")` e `fmt.Errorf("...: %w", err)` creano errori',
+        '`%w` wrappa l\'errore — `errors.As()` e `errors.Is()` lo scompattano',
+        '`defer` garantisce cleanup: `defer f.Close()`, `defer mu.Unlock()`',
+        'Errori custom: struct che implementa `Error() string`',
+      ]},
+    ],
+    tryIt: {
+      desc: 'Usa defer per stampare "Fine funzione" quando main() esce:',
+      code: `package main\n\nimport "fmt"\n\nfunc main() {\n\tdefer fmt.Println("Fine funzione")\n\tfmt.Println("Inizio")\n\tfmt.Println("Lavoro...")\n}`,
+      output: `Inizio\nLavoro...\nFine funzione`,
+    },
+  },
+  'go-3-2': {
+    title: 'HTTP server con net/http', xp: 20,
+    blocks: [
+      { type: 'text', md: 'La standard library di Go include un **HTTP server** production-ready in `net/http`. Nessun framework necessario per API semplici. Per app più complesse esistono framework come **Gin** o **Echo**.' },
+      { type: 'code', label: 'server.go', lang: 'go', code: `package main\n\nimport (\n\t"encoding/json"\n\t"fmt"\n\t"log"\n\t"net/http"\n)\n\ntype Utente struct {\n\tID   int    \`json:"id"\`\n\tNome string \`json:"nome"\`\n}\n\nfunc utentiHandler(w http.ResponseWriter, r *http.Request) {\n\tif r.Method != http.MethodGet {\n\t\thttp.Error(w, "metodo non permesso", http.StatusMethodNotAllowed)\n\t\treturn\n\t}\n\n\tutenti := []Utente{\n\t\t{ID: 1, Nome: "Alice"},\n\t\t{ID: 2, Nome: "Bob"},\n\t}\n\n\tw.Header().Set("Content-Type", "application/json")\n\tjson.NewEncoder(w).Encode(utenti)\n}\n\nfunc main() {\n\tmux := http.NewServeMux()\n\tmux.HandleFunc("/utenti", utentiHandler)\n\tmux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {\n\t\tfmt.Fprintln(w, "API Go attiva")\n\t})\n\n\tlog.Println("Server su :8080")\n\tlog.Fatal(http.ListenAndServe(":8080", mux))\n}` },
+      { type: 'keypoints', title: 'net/http pattern', points: [
+        '`http.NewServeMux()` crea un router — preferibile al mux globale',
+        '`w http.ResponseWriter` scrive la risposta, `r *http.Request` legge la richiesta',
+        'Struct tags `json:"nome"` controllano la serializzazione JSON',
+        '`log.Fatal` logga e chiama `os.Exit(1)` — perfetto per errori di avvio',
+      ]},
+    ],
+    tryIt: {
+      desc: 'Aggiungi una route /ping che risponde con { "ok": true }:',
+      code: `package main\n\nimport (\n\t"encoding/json"\n\t"net/http"\n)\n\nfunc main() {\n\tmux := http.NewServeMux()\n\tmux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {\n\t\tw.Header().Set("Content-Type", "application/json")\n\t\tjson.NewEncoder(w).Encode(map[string]bool{"ok": true})\n\t})\n\thttp.ListenAndServe(":8080", mux)\n}`,
+      output: `GET /ping → {"ok": true}`,
+    },
+  },
+  'go-3-3': {
+    title: 'Testing e benchmarking', xp: 20,
+    blocks: [
+      { type: 'text', md: 'Go ha un framework di testing **built-in** nel package `testing`. I test vivono in file `_test.go` e si eseguono con `go test`. Il benchmarking è integrato — nessuna libreria esterna necessaria.' },
+      { type: 'code', label: 'math_test.go', lang: 'go', code: `package utils\n\nimport "testing"\n\nfunc TestSomma(t *testing.T) {\n\tcasi := []struct {\n\t\ta, b, atteso int\n\t}{\n\t\t{1, 2, 3},\n\t\t{0, 0, 0},\n\t\t{-1, 1, 0},\n\t\t{100, 200, 300},\n\t}\n\n\tfor _, c := range casi {\n\t\trisultato := Somma(c.a, c.b)\n\t\tif risultato != c.atteso {\n\t\t\tt.Errorf("Somma(%d, %d) = %d; atteso %d",\n\t\t\t\tc.a, c.b, risultato, c.atteso)\n\t\t}\n\t}\n}\n\nfunc BenchmarkSomma(b *testing.B) {\n\tfor i := 0; i < b.N; i++ {\n\t\tSomma(100, 200)\n\t}\n}\n\n// Esegui test:      go test ./...\n// Esegui benchmark: go test -bench=. ./...\n// Con coverage:     go test -cover ./...` },
+      { type: 'keypoints', title: 'Testing in Go', points: [
+        'File `*_test.go` stesso package — accede anche a non-esportati',
+        '`t.Errorf` segnala fallimento senza fermare, `t.Fatalf` ferma subito',
+        'Table-driven tests: slice di casi — pattern idiomatico Go',
+        '`go test -race` rileva race condition con il race detector',
+      ]},
+    ],
+    tryIt: {
+      desc: 'Scrivi un test per una funzione Doppio(n int) int che restituisce n*2:',
+      code: `package main\n\nimport "testing"\n\nfunc Doppio(n int) int {\n\treturn n * 2\n}\n\nfunc TestDoppio(t *testing.T) {\n\tif Doppio(3) != 6 {\n\t\tt.Errorf("Doppio(3) atteso 6, ottenuto %d", Doppio(3))\n\t}\n}`,
+      output: `ok  \tmain\t0.001s`,
+    },
+  },
+
+  // ── Go Quizzes ────────────────────────────────────────────────────────────
+  'go-1-q': {
+    title: 'Quiz: Go Principiante', xp: 30,
+    questions: [
+      { text: 'Come si dichiara una variabile con type inference in Go?', options: ['var x = 10', 'x := 10', 'let x = 10', "Sia 'var x = 10' che 'x := 10'"], correct: 3, explanation: 'Entrambi funzionano: var x = 10 (esplicito) e x := 10 (short declaration, solo dentro funzioni).' },
+      { text: 'Quale struttura dati Go ha dimensione dinamica?', options: ['Array', 'Slice', 'Map', 'Struct'], correct: 1, explanation: 'La slice è dinamica e supporta append(). Gli array hanno dimensione fissa nel tipo.' },
+      { text: 'Come si avvia un programma Go?', options: ['go start main.go', 'go run main.go', 'node main.go', 'go exec main.go'], correct: 1, explanation: 'go run main.go compila ed esegue in un unico step. go build produce un binario.' },
+      { text: 'Qual è il punto di ingresso di un eseguibile Go?', options: ['func Start()', 'func Init()', 'func Main()', 'func main()'], correct: 3, explanation: 'func main() nel package main è il punto di ingresso — minuscola, nessun parametro.' },
+    ],
+  },
+  'go-2-q': {
+    title: 'Quiz: Go Intermedio', xp: 40,
+    questions: [
+      { text: "Come si crea un'interfaccia in Go?", options: ['interface Forma { Area() float64 }', 'type Forma interface { Area() float64 }', 'class Forma { Area() float64 }', 'struct Forma interface { Area() }'], correct: 1, explanation: 'type NomeInterfaccia interface { MetodoA() TipoRitorno } — le interfacce sono soddisfatte implicitamente.' },
+      { text: 'Quale keyword avvia una goroutine?', options: ['async', 'go', 'spawn', 'thread'], correct: 1, explanation: 'go f() avvia f() come goroutine concorrente. Nessun async/await — la concorrenza è strutturale.' },
+      { text: 'Come si crea un channel buffered di capacità 10?', options: ['make(chan int)', 'make(chan int, 10)', 'chan int[10]', 'new(chan int, 10)'], correct: 1, explanation: 'make(chan int, 10) crea un channel che può contenere 10 valori senza bloccare il mittente.' },
+      { text: 'Cosa rende una funzione/variabile Go esportata da un package?', options: ['Keyword export', 'Lettera maiuscola', 'Keyword public', 'File separato'], correct: 1, explanation: 'In Go la visibilità è determinata dalla lettera iniziale: maiuscola = esportato, minuscola = privato al package.' },
+    ],
+  },
+  'go-3-q': {
+    title: 'Quiz: Go Avanzato', xp: 50,
+    questions: [
+      { text: 'Quando viene eseguito defer?', options: ['Immediatamente', 'Al primo errore', 'Alla fine della funzione corrente', 'Mai se non c\'è errore'], correct: 2, explanation: 'defer esegue la funzione quando la funzione che lo contiene ritorna — anche in caso di panic. Ordine LIFO se ci sono più defer.' },
+      { text: 'Come si wrappa un errore in Go per conservare la causa originale?', options: ['errors.Wrap(err)', 'fmt.Errorf("msg: %w", err)', 'err.Wrap("msg")', 'new(Error, err)'], correct: 1, explanation: 'fmt.Errorf con il verbo %w wrappa l\'errore. errors.Is() e errors.As() permettono di scompattarlo.' },
+      { text: 'Quale package Go gestisce server HTTP senza librerie esterne?', options: ['http', 'net/http', 'server/http', 'stdlib/http'], correct: 1, explanation: 'net/http è nella standard library e fornisce server e client HTTP production-ready.' },
+      { text: "In quale file si scrivono i test in Go?", options: ['test.go', '*_spec.go', '*_test.go', 'tests/*.go'], correct: 2, explanation: 'I test vanno in file con suffisso _test.go. go test li trova automaticamente.' },
     ],
   },
 }

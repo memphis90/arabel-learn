@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({ tryIt: { type: Object, required: true } })
 
@@ -108,7 +108,12 @@ const PISTON_MAP = {
 function detectLang(tryIt) {
   if (tryIt.lang) return tryIt.lang
   const c = tryIt.code?.trim() || ''
-  if (c.startsWith('#!') || /^(cd|ls|mkdir|rm|echo|cat|grep|find|chmod|sudo)\b/m.test(c)) return 'bash'
+  if (c.startsWith('#!') || /^(cd|ls|mkdir|rm|echo|cat|grep|find|chmod|sudo|curl|ssh)\b/m.test(c)) return 'bash'
+  if (c.startsWith('<?php')) return 'php'
+  if (c.startsWith('package main') || /^func \w/m.test(c)) return 'go'
+  if (/^(--|SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER)\b/im.test(c)) return 'sql'
+  if (/^(SET|GET|HSET|PUBLISH|XADD|SUBSCRIBE|LPUSH|SADD|TTL|DEL)\b/m.test(c)) return 'redis'
+  if (/\bfunction\s+\w+\s*\([^)]*:\s*(string|number|boolean)\b/.test(c)) return 'ts'
   return 'js'
 }
 
@@ -122,6 +127,13 @@ const output   = ref('')
 const ran      = ref(false)
 const running  = ref(false)
 const hasError = ref(false)
+
+watch(() => props.tryIt, (t) => {
+  code.value     = t.code
+  output.value   = ''
+  ran.value      = false
+  hasError.value = false
+})
 
 // Run JS locally in a sandboxed Web Worker — no external API, no auth, instant
 function runLocal(src) {
