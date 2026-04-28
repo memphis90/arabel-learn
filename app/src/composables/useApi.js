@@ -12,11 +12,9 @@ export function useApi() {
 
     if (response.status === 401) {
       const auth = useAuthStore()
-      if (auth.isAuthenticated) {
+      if (auth.isAuthenticated && endpoint.startsWith('/auth/')) {
         auth.clearUser()
-        if (endpoint.startsWith('/auth/')) {
-          window.location.href = '/login'
-        }
+        window.location.href = '/login'
       }
       return { data: null, error: 'Unauthenticated', status: 401 }
     }

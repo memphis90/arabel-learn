@@ -1,9 +1,9 @@
 <template>
-  <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:#0a0a18;margin:4px 0">
-    <div v-if="label" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.06)">
-      <span style="font-size:0.72rem;color:rgba(228,230,244,0.45);font-family:monospace">{{ label }}</span>
+  <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(var(--rgb-border),0.15);background:#0d0d1f;margin:4px 0">
+    <div v-if="label" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(0,0,0,0.2);border-bottom:1px solid rgba(255,255,255,0.06)">
+      <span style="font-size:0.72rem;color:rgba(200,195,185,0.6);font-family:monospace">{{ label }}</span>
       <button @click="copy" style="background:none;border:none;cursor:pointer;font-size:0.7rem;padding:2px 6px;border-radius:4px;transition:color 0.2s"
-        :style="{ color: copied ? '#22c55e' : 'rgba(228,230,244,0.35)' }">
+        :style="{ color: copied ? '#22c55e' : 'rgba(200,195,185,0.45)' }">
         {{ copied ? '✓ Copiato' : 'Copia' }}
       </button>
     </div>

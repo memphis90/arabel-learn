@@ -1,7 +1,7 @@
 <template>
   <div style="display:flex;align-items:center;gap:8px">
-    <span v-if="showLabel" style="font-size:0.72rem;color:rgba(228,230,244,0.5);min-width:60px">{{ current }} / {{ total }} XP</span>
-    <div style="flex:1;height:5px;border-radius:99px;background:rgba(255,255,255,0.08);overflow:hidden">
+    <span v-if="showLabel" style="font-size:0.72rem;color:rgba(var(--rgb-text),0.5);min-width:60px">{{ current }} / {{ total }} XP</span>
+    <div style="flex:1;height:5px;border-radius:99px;background:rgba(var(--rgb-border),0.1);overflow:hidden">
       <div :style="{
         height: '100%',
         width: pct + '%',

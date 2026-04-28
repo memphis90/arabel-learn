@@ -94,11 +94,13 @@ import StarBackground from '@/components/StarBackground.vue'
 import AppSidebar     from '@/components/AppSidebar.vue'
 import AppHeader      from '@/components/AppHeader.vue'
 import { useLearnStore } from '@/stores/learn'
+import { useLocale }     from '@/composables/useLocale'
 import { courses, quizzes } from '@/data/learn'
 
 const route  = useRoute()
 const router = useRouter()
 const learn  = useLearnStore()
+const { t }  = useLocale()
 
 const courseId   = computed(() => route.query.courseId || '')
 const quiz       = computed(() => quizzes[route.params.id])

@@ -8,7 +8,7 @@
         { label: course?.name || '', onClick: () => $router.push({ name: 'course', params: { id: courseId } }) },
         { label: lesson?.title || '' },
       ]" />
-      <div v-if="lesson && course" class="view-scroll" style="flex:1;overflow-y:auto;padding:24px 32px">
+      <div v-if="lesson && course" ref="scrollEl" class="view-scroll" style="flex:1;overflow-y:auto;padding:24px 32px">
         <div style="max-width:760px;margin:0 auto">
 
           <!-- Header -->
@@ -114,7 +114,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import StarBackground from '@/components/StarBackground.vue'
 import AppSidebar     from '@/components/AppSidebar.vue'
@@ -138,6 +138,9 @@ const done     = computed(() => learn.isCompleted(route.params.id))
 const adjacent = computed(() => getAdjacentItems(courseId.value, route.params.id))
 const prev     = computed(() => adjacent.value.prev)
 const next     = computed(() => adjacent.value.next)
+
+const scrollEl = ref(null)
+watch(() => route.params.id, () => { scrollEl.value?.scrollTo({ top: 0, behavior: 'smooth' }) })
 
 const shownSolutions = reactive({})
 function toggleSolution(i) { shownSolutions[i] = !shownSolutions[i] }

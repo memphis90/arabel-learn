@@ -148,8 +148,8 @@
           <!-- Badge -->
           <div style="margin-bottom:36px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-              <h2 style="margin:0;font-size:0.75rem;font-weight:700;color:rgba(228,230,244,0.38);letter-spacing:0.1em">BADGE SBLOCCATI</h2>
-              <div style="font-size:0.7rem;color:rgba(228,230,244,0.25)">{{ earnedBadges.filter(b => b.earned).length }}/{{ earnedBadges.length }}</div>
+              <h2 style="margin:0;font-size:0.75rem;font-weight:700;color:rgba(var(--rgb-text),0.38);letter-spacing:0.1em">BADGE SBLOCCATI</h2>
+              <div style="font-size:0.7rem;color:rgba(var(--rgb-text),0.25)">{{ earnedBadges.filter(b => b.earned).length }}/{{ earnedBadges.length }}</div>
             </div>
 
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px">
@@ -157,8 +157,8 @@
                    :style="{
                   padding: '20px 16px',
                   borderRadius: '16px',
-                  background: badge.earned ? 'linear-gradient(135deg, rgba(168,85,247,0.12), rgba(168,85,247,0.04))' : 'rgba(12,12,28,0.4)',
-                  border: badge.earned ? '1px solid rgba(168,85,247,0.25)' : '1px dashed rgba(255,255,255,0.04)',
+                  background: badge.earned ? 'linear-gradient(135deg, rgba(168,85,247,0.12), rgba(168,85,247,0.04))' : 'rgba(var(--rgb-border),0.05)',
+                  border: badge.earned ? '1px solid rgba(168,85,247,0.25)' : '1px dashed rgba(var(--rgb-border),0.15)',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
                   textAlign: 'center',
                   position: 'relative',
@@ -168,10 +168,10 @@
                    @mouseover="e => badge.earned && (e.currentTarget.style.transform='scale(1.05)', e.currentTarget.style.boxShadow='0 12px 32px rgba(168,85,247,0.2)')"
                    @mouseout="e => (e.currentTarget.style.transform='none', e.currentTarget.style.boxShadow='none')">
                 <img v-if="badge.icon" :src="badge.icon" width="42" height="42"
-                     :style="{ filter: badge.earned ? 'drop-shadow(0 4px 12px rgba(168,85,247,0.4))' : 'grayscale(1) brightness(0.3)', transition: 'filter 0.3s' }" />
+                     :style="{ filter: badge.earned ? 'drop-shadow(0 4px 12px rgba(168,85,247,0.4))' : 'grayscale(1) opacity(0.3)', transition: 'filter 0.3s' }" />
                 <span v-else :style="{ fontSize: '2.2rem', lineHeight: 1, opacity: badge.earned ? 1 : 0.2, transition: 'opacity 0.3s' }">{{ badge.emoji }}</span>
-                <div :style="{ fontSize: '0.8rem', fontWeight: 600, color: badge.earned ? '#e4e6f4' : 'rgba(228,230,244,0.25)', lineHeight: 1.3 }">{{ t('badges.name.' + badge.id) }}</div>
-                <div style="font-size:0.68rem;color:rgba(228,230,244,0.22);line-height:1.4">{{ t('badges.desc.' + badge.id) }}</div>
+                <div :style="{ fontSize: '0.8rem', fontWeight: 600, color: badge.earned ? 'var(--text-1)' : 'rgba(var(--rgb-text),0.25)', lineHeight: 1.3 }">{{ t('badges.name.' + badge.id) }}</div>
+                <div style="font-size:0.68rem;color:rgba(var(--rgb-text),0.38);line-height:1.4">{{ t('badges.desc.' + badge.id) }}</div>
                 <div v-if="badge.earned"
                      style="position:absolute;top:10px;right:12px;width:18px;height:18px;border-radius:50%;background:rgba(34,197,94,0.2);border:1px solid rgba(34,197,94,0.5);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#86efac">✓</div>
               </div>
